@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     int measure_rounds = 0;
     char *input_file;
     bool decrypt = false;
-    char *output_file;
+    char *output_file = "\0";
 
     // --help for -h
     static struct option help_synonym[] = {
@@ -78,10 +78,10 @@ int main(int argc, char **argv) {
 
     input_file = argv[optind];
 
-    const char *data = read_data(input_file);
-    const size_t data_length = strlen(data);
+    char *data = read_data(input_file);
+    size_t data_length = strlen(data);
 
-    printf("Inputted String: %s\n", data);
+    printf("String in file: '%s'\n", data);
     printf("Length of the String: %zu\n", data_length);
 
     char *result;
@@ -92,7 +92,11 @@ int main(int argc, char **argv) {
         result = huffman_encode(data_length, data);
     }
 
-    write_data(output_file, result);
+    result = "HUFFMAN ENCODING EXAMPLE";
+
+    if (strlen(output_file) > 0 && strlen(result) > 0) {
+        write_data(output_file, result);
+    }
 
     return EXIT_SUCCESS;
 }
