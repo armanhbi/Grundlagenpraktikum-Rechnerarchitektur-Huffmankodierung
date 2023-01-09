@@ -1,26 +1,34 @@
-struct node {
-    char character;
-    int frequency;
-    struct node* left;
-    struct node* right;
-};
+#include "tree.h"
 
-struct *node add(char character, int frequency, *node two) {
-    struct node one = malloc(sizeof(struct node));
-    if (!one) {
+void print_tree_inorder(struct node *root) {
+    if (!root) {
+        return;
+    }
+    print_tree_inorder(root->left);
+    printf("Knoten '%c': %d\n", root->character, root->frequency);
+    print_tree_inorder(root->right);
+}
+
+struct node *create_tree(char character, int frequency) {
+    struct node *created_node = malloc(sizeof(struct node));
+    if (!created_node) {
         return NULL;
     }
-    one->character = character;
-    one->frequency = frequency;
-    one->left = one->right = NULL;
+    created_node->character = character;
+    created_node->frequency = frequency;
+    created_node->left = NULL;
+    created_node->right = NULL;
+    return created_node;
+}
 
-    struct node *new_node = malloc(sizeof(struct node));
-    if (!new_node) {
+struct node *add(struct node *root, struct node *toInsert) {
+    struct node *new_root = malloc(sizeof(struct node));
+    if (!new_root) {
         return NULL;
     }
-    new_node->character = NULL;
-    new_node->frequency = one->frequency + two->frequency;
-    new_node->left = one;
-    new_node->right = two;
-    return new_node;
+    new_root->character = '\0';
+    new_root->frequency = root->frequency + toInsert->frequency;
+    new_root->left = toInsert;
+    new_root->right = root;
+    return new_root;
 }

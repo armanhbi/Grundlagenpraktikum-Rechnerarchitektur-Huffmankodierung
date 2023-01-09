@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#define BUF_LENGTH 1024
+#include "input_output.h"
 
 void file_error(FILE *fd, char *msg) {
     perror(msg);

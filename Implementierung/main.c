@@ -3,9 +3,10 @@
 #include <stdbool.h>
 #include <getopt.h>
 #include <string.h>
+#include <stdint.h>
 
-#include "huffman.c"
-#include "input_output.c"
+#include "huffman.h"
+#include "input_output.h"
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
 const char *HELP_MSG = "\nusage: huffman <input_file> [-V version_num] [-B n] [-d] [-o output_file] [-h]\n\n"
