@@ -12,8 +12,8 @@ const char *HELP_MSG = "\nusage: huffman <input_file> [-V version_num] [-B n] [-
                        "\tinput_file:\t\tPath to input file used for Huffman en-/decoding\n\n"
                        "\t-V <version_num>:\tImplementation version to use (as number, default: 0)\n"
                        "\t-B <n>:\t\t\tTime measurement over n rounds (as number)\n"
-                       "\t-d:\t\t\tIf set decrypting given Huffman code\n"
-                       "\t-o <output_file>:\tOutput file to write result into\n"
+                       "\t-d:\t\t\tIf set, decrypting a given Huffman code\n"
+                       "\t-o <output_file>:\tOutput file to write result to\n"
                        "\t-h:\t\t\tShows this help menu\n\n";
 
 /**
@@ -28,7 +28,8 @@ int main(int argc, char **argv) {
     // Checking if program and arguments are valid
     if (argc < 2) {
         print_help();
-        return EXIT_FAILURE;
+        return 0;
+        //return EXIT_FAILURE;
     }
 
     int impl_num = 0;
@@ -53,7 +54,7 @@ int main(int argc, char **argv) {
                 measure = true;
                 if (optarg == NULL) {
                     print_help();
-                    exit(EXIT_FAILURE);
+                    return EXIT_FAILURE;
                 }
                 measure_rounds = atoi(optarg);
                 break;
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
             case 'h':
             default:
                 print_help();
-                exit(EXIT_FAILURE);
+                return EXIT_FAILURE;
         }
     }
 
@@ -92,11 +93,11 @@ int main(int argc, char **argv) {
         result = huffman_encode(data_length, data);
     }
 
-    result = "HUFFMAN ENCODING EXAMPLE";
+//    result = "HUFFMAN ENCODING EXAMPLE";
 
-    if (strlen(output_file) > 0 && strlen(result) > 0) {
-        write_data(output_file, result);
-    }
+//    if (strlen(output_file) > 0 && strlen(result) > 0) {
+//        write_data(output_file, result);
+//    }
 
     return EXIT_SUCCESS;
 }

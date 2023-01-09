@@ -4,8 +4,8 @@
 
 #define BUF_LENGTH 1024
 
-void file_error(FILE *fd, char *msg, char *arg) {
-    fprintf(stderr, msg, arg);
+void file_error(FILE *fd, char *msg) {
+    perror(msg);
     fclose(fd);
     exit(EXIT_FAILURE);
 }
@@ -20,13 +20,13 @@ char *read_data(char *path) {
     char *buf = malloc(BUF_LENGTH); // save enough space for up to 1024 characters
 
     if (buf == NULL) { // if malloc did not work
-        file_error(fd, "An error occurred while trying to allocate memory (malloc)\n", "");
+        file_error(fd, "An error occurred while trying to allocate memory (malloc).\n");
     }
 
     fd = fopen(path, "r"); // open file with path and in reading mode
 
     if (fd == NULL) { // if opening the file did not work
-        file_error(fd, "An error occurred while trying to get the file descriptor of %s! (Does it exist?)\n", path);
+        file_error(fd, "An error occurred while trying to get the file descriptor. (Does it exist?)\n");
     }
 
     size_t i = 0;
@@ -51,7 +51,7 @@ void write_data(char *path, char *result) {
     FILE *fd;
     fd = fopen(path, "w");
     if (fd == NULL) {
-        file_error(fd, "An error occurred while trying to allocate memory (malloc)\n", "");
+        file_error(fd, "An error occurred while trying to allocate memory (malloc).\n");
     }
 
     printf("Result was saved in %s\n", path);
@@ -60,7 +60,7 @@ void write_data(char *path, char *result) {
     // printf("Result %s\n", result);
 
     if (fputs(result, fd) == EOF) {
-        file_error(fd, "An error occurred while trying to save the string to %s\n", path);
+        file_error(fd, "An error occurred while trying to save the string.\n");
     }
     fclose(fd);
 }
