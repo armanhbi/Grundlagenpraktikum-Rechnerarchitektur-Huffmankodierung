@@ -1,15 +1,6 @@
 #include "tree.h"
 
-void print_tree_inorder(struct node *root) {
-    if (!root) {
-        return;
-    }
-    print_tree_inorder(root->left);
-    printf("Knoten '%c': %d\n", root->character, root->frequency);
-    print_tree_inorder(root->right);
-}
-
-struct node *create_tree(char character, int frequency) {
+struct node *create_node(char character, int frequency) {
     struct node *created_node = malloc(sizeof(struct node));
     if (!created_node) {
         return NULL;
@@ -21,7 +12,7 @@ struct node *create_tree(char character, int frequency) {
     return created_node;
 }
 
-struct node *add(struct node *root, struct node *toInsert) {
+struct node *add_node(struct node *root, struct node *toInsert) {
     struct node *new_root = malloc(sizeof(struct node));
     if (!new_root) {
         return NULL;
@@ -31,4 +22,13 @@ struct node *add(struct node *root, struct node *toInsert) {
     new_root->left = toInsert;
     new_root->right = root;
     return new_root;
+}
+
+void print_tree_inorder(struct node *root) {
+    if (!root) {
+        return;
+    }
+    print_tree_inorder(root->left);
+    printf("Knoten '%c': %d\n", root->character, root->frequency);
+    print_tree_inorder(root->right);
 }

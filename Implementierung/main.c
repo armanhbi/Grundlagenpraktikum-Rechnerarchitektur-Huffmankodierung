@@ -94,8 +94,6 @@ int main(int argc, char **argv) {
         result = huffman_encode(data_length, data);
     }
 
-//    result = "HUFFMAN ENCODING EXAMPLE";
-
 //    if (strlen(output_file) > 0 && strlen(result) > 0) {
 //        write_data(output_file, result);
 //    }

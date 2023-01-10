@@ -1,5 +1,4 @@
-#include "tree.h"
-#include <string.h>
+#include "huffman.h"
 
 void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
     if (tree->right == NULL && tree->left == NULL) {
@@ -17,8 +16,8 @@ void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
     encode_tree_to_string(tree->right, buffer, cur);
 }
 
-struct node *decode_tree_to_string(char *compressed, int *cur) {
-    struct node *cur_node = create_tree('\0', 0);
+struct node *decode_string_to_tree(char *compressed, int *cur) {
+    struct node *cur_node = create_node('\0', 0);
     cur_node->left = NULL;
     cur_node->right = NULL;
 
@@ -36,9 +35,9 @@ struct node *decode_tree_to_string(char *compressed, int *cur) {
             return cur_node;
         }
         ++(*cur);
-        cur_node->left = decode_tree_to_string(compressed, cur);
+        cur_node->left = decode_string_to_tree(compressed, cur);
         ++(*cur);
-        cur_node->right = decode_tree_to_string(compressed, cur);
+        cur_node->right = decode_string_to_tree(compressed, cur);
         (*cur)++;
     }
     return cur_node;
@@ -89,9 +88,9 @@ char *huffman_encode(size_t len, const char data[len]) {
         }
 
         if (!root) {
-            root = create_tree(minIndex, table[minIndex]);
+            root = create_node(minIndex, table[minIndex]);
         } else {
-            root = add(root, create_tree(minIndex, table[minIndex]));
+            root = add_node(root, create_node(minIndex, table[minIndex]));
         }
 
         table[minIndex] = 0;
@@ -105,7 +104,7 @@ char *huffman_encode(size_t len, const char data[len]) {
     printf("Compressed tree ready to be saved: %s\n", buffer);
 
     int *cur2 = malloc(1); // malloc check
-    struct node *root2 = decode_tree_to_string(buffer, cur2);
+    struct node *root2 = decode_string_to_tree(buffer, cur2);
 
     print_tree_inorder(root2);
 
