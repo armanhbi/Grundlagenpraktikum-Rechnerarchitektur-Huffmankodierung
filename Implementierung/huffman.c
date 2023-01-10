@@ -7,9 +7,9 @@ void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
         printf("1 ");
         printf("%c (", character);
         for (int i = 9; i > 1; i--) {
-            char c = (character&0x80)>>7 ? '1' : '0'; // Bit hack to get the first bit of the character
+            char c = (character & 0x80) >> 7 ? '1' : '0'; // Bit hack to get the first bit of the character
             buffer[(*cur)++] = c;
-            character<<=1;
+            character <<= 1;
             printf("%c", c);
         }
         printf(") ");
@@ -30,13 +30,13 @@ struct node *decode_string_to_tree(char *compressed, int *cur) {
         if (compressed[*cur] == 49) { // ascii for '1'
             char character;
             for (int i = 1; i < 9; i++) {
-                character<<=1;
-                if (compressed[(*cur)+i]-49 == 0) {
+                character <<= 1;
+                if (compressed[(*cur) + i] - 49 == 0) {
                     character++;
                 }
             }
             cur_node->character = character;
-            (*cur)+=8;
+            (*cur) += 8;
             return cur_node;
         }
         ++(*cur);
@@ -106,6 +106,8 @@ char *huffman_encode(size_t len, const char data[len]) {
     printf("%sTree creation%s\n", CYAN, WHITE);
     print_tree_inorder(root);
     printf("\n");
+
+    // turn
 
     char *buffer = malloc(512); // malloc check
     int *cur = malloc(1); // malloc check

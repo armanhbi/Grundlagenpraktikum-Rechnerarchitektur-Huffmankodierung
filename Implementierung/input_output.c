@@ -50,13 +50,18 @@ void write_data(char *path, char *result) {
         file_error(fd, "An error occurred while trying to allocate memory (malloc).\n");
     }
 
-    printf("Result was saved in %s\n", path);
-
-    // printf("Path %s\n", path);
-    // printf("Result %s\n", result);
+    printf("%sResult was saved in '%s'%s\n", GREEN, path, WHITE);
 
     if (fputs(result, fd) == EOF) {
         file_error(fd, "An error occurred while trying to save the string.\n");
     }
     fclose(fd);
+}
+
+char *read_binary(char *path) {
+    return read_data(path);
+}
+
+void write_binary(char *path, char *result) {
+    write_data(path, result);
 }

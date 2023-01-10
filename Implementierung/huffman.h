@@ -9,6 +9,7 @@
 #define RED "\x1b[31m"
 #define WHITE "\x1B[37m"
 #define CYAN "\x1B[36m"
+#define GREEN "\x1B[32m"
 
 void encode_tree_to_string(struct node *tree, char *buffer, int *cur);
 struct node *decode_string_to_tree(char *compressed, int *cur);

@@ -80,7 +80,12 @@ int main(int argc, char **argv) {
 
     input_file = argv[optind];
 
-    char *data = read_data(input_file);
+    char *data;
+    if (decrypt) {
+        data = read_binary(input_file);
+    } else {
+        data = read_data(input_file);
+    }
     size_t data_length = strlen(data);
 
     printf("\n%sBasic Information%s", CYAN, WHITE);
@@ -102,10 +107,14 @@ int main(int argc, char **argv) {
     print_tree_inorder(root2);
     printf("\n");
 
-    // Save into file if option is set
-//    if (strlen(output_file) > 0 && strlen(result) > 0) {
-//        write_data(output_file, result);
-//    }
+    if (strlen(output_file) && strlen(data)) {
+        if (decrypt) {
+            write_data(output_file, data);
+        } else {
+            write_binary(output_file, data);
+        }
+
+    }
 
     return EXIT_SUCCESS;
 }
