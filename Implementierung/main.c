@@ -83,17 +83,26 @@ int main(int argc, char **argv) {
     char *data = read_data(input_file);
     size_t data_length = strlen(data);
 
-    printf("String in file: '%s'\n", data);
-    printf("Length of the String: %zu\n", data_length);
-
-    char *result;
+    printf("\n%sBasic Information%s", CYAN, WHITE);
+    printf("\nString in file: '%s%s%s'\n", RED, data, WHITE);
+    printf("Length of the String: %s%zu%s\n\n", RED, data_length, WHITE);
 
     if (decrypt) {
-        result = huffman_decode(data_length, data);
+        data = huffman_decode(data_length, data);
     } else {
-        result = huffman_encode(data_length, data);
+        data = huffman_encode(data_length, data);
     }
 
+    printf("\nRETURN VALUE: %s%s%s\n", RED, data, WHITE);
+    printf("\n");
+
+    printf("%sRebuild tree (debug)%s\n", CYAN, WHITE);
+    int *cur2 = malloc(1); // malloc check
+    struct node *root2 = decode_string_to_tree(data, cur2);
+    print_tree_inorder(root2);
+    printf("\n");
+
+    // Save into file if option is set
 //    if (strlen(output_file) > 0 && strlen(result) > 0) {
 //        write_data(output_file, result);
 //    }

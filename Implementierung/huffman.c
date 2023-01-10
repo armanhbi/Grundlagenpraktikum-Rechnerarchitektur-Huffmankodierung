@@ -4,14 +4,19 @@ void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
     if (tree->right == NULL && tree->left == NULL) {
         char character = tree->character;
         buffer[(*cur)++] = '1';
+        printf("1 ");
+        printf("%c (", character);
         for (int i = 9; i > 1; i--) {
             char c = (character&0x80)>>7 ? '1' : '0'; // Bit hack to get the first bit of the character
             buffer[(*cur)++] = c;
             character<<=1;
+            printf("%c", c);
         }
+        printf(") ");
         return;
     }
     buffer[(*cur)++] = '0';
+    printf("0 ");
     encode_tree_to_string(tree->left, buffer, cur);
     encode_tree_to_string(tree->right, buffer, cur);
 }
@@ -65,11 +70,13 @@ char *huffman_encode(size_t len, const char data[len]) {
     }
 
     // print (for debugging)
+    printf("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
     for (int i = 0; i < 128; i++) {
         int frequency = table[i];
         if (frequency != 0)
-            printf("Der '%c' kommt %d mal vor!\n", i, table[i]);
+            printf("Der '%c' kommt %s%d%s mal vor!\n", i, RED, table[i], WHITE);
     }
+    printf("\n");
 
     // create tree
     struct node *root = NULL;
@@ -96,22 +103,18 @@ char *huffman_encode(size_t len, const char data[len]) {
         table[minIndex] = 0;
     }
 
+    printf("%sTree creation%s\n", CYAN, WHITE);
     print_tree_inorder(root);
+    printf("\n");
 
     char *buffer = malloc(512); // malloc check
     int *cur = malloc(1); // malloc check
+    printf("%sCompressed tree%s\n", CYAN, WHITE);
     encode_tree_to_string(root, buffer, cur);
-    printf("Compressed tree ready to be saved: %s\n", buffer);
-
-    int *cur2 = malloc(1); // malloc check
-    struct node *root2 = decode_string_to_tree(buffer, cur2);
-
-    print_tree_inorder(root2);
 
     free(table);
-    free(buffer);
     free(cur);
-    return "";
+    return buffer;
 }
 
 /**
