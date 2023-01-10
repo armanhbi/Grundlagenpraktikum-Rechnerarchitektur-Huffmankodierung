@@ -6,9 +6,9 @@
 
 #include "tree.h"
 
-void print_error(char *msg);
+void encode_tree_to_string(struct node *tree, char *buffer, int *cur);
+struct node *decode_tree_to_string(char *compressed, int *cur);
 char* huffman_encode(size_t len, const char data[len]);
 char* huffman_decode(size_t len, const char data[len]);
-uint64_t encode_tree(struct node *tree);
 
 #endif
