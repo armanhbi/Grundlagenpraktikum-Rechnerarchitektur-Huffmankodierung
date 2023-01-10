@@ -50,7 +50,7 @@ void write_data(char *path, char *result) {
         file_error(fd, "An error occurred while trying to allocate memory (malloc).\n");
     }
 
-    printf("%sResult was saved in '%s'%s\n", GREEN, path, WHITE);
+    printf("%sResult was saved in '%s'%s\n", GREEN, path, WHITE); // print (for debugging)
 
     if (fputs(result, fd) == EOF) {
         file_error(fd, "An error occurred while trying to save the string.\n");

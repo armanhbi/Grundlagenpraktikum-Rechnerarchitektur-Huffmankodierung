@@ -32,3 +32,17 @@ void print_tree_inorder(struct node *root) {
     printf("Knoten '%c': %d\n", root->character, root->frequency);
     print_tree_inorder(root->right);
 }
+
+void tree_to_dic(struct node *root, uint64_t *used_table, char *lookup_table, uint8_t location) {
+    if (!root) {
+        return;
+    }
+    tree_to_dic(root->left, used_table, lookup_table, (location << 1));
+    if (root->character) {
+        uint64_t mask = 1 << (root->character % 64);
+        used_table[(root->character - 64) > 0] |= mask;
+        lookup_table[root->character] = location;
+    }
+    uint64_t temp_loc = location << 1;
+    tree_to_dic(root->right, used_table, lookup_table, ++temp_loc);
+}
