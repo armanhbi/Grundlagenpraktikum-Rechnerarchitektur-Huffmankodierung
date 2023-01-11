@@ -1,15 +1,12 @@
-#ifndef HUFFMAN_H_
-#define HUFFMAN_H_
+#ifndef HUFFMAN_H
+#define HUFFMAN_H
 
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "helper.h"
 #include "tree.h"
-
-#define RED "\x1b[31m"
-#define WHITE "\x1B[37m"
-#define CYAN "\x1B[36m"
-#define GREEN "\x1B[32m"
+#include "input_output.h"
 
 void encode_tree_to_string(struct node *tree, char *buffer, int *cur);
 struct node *decode_string_to_tree(char *compressed, int *cur);

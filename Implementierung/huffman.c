@@ -48,35 +48,6 @@ struct node *decode_string_to_tree(char *compressed, int *cur) {
     return cur_node;
 }
 
-uint8_t fast_log2(int binary) {
-    if (binary == 0 || binary == 1)
-        return 1;
-    if (binary == 2 || binary == 3)
-        return 2;
-    if (binary >= 4 && binary <= 7)
-        return 3;
-    if (binary >= 8 && binary <= 15)
-        return 4;
-    if (binary >= 16 && binary <= 31)
-        return 5;
-    if (binary >= 32 && binary <= 63)
-        return 6;
-    if (binary >= 64 && binary <= 127)
-        return 7;
-    if (binary >= 128 && binary <= 256)
-        return 8;
-    return -1;
-}
-
-uint8_t createMask(int number) {
-    uint8_t mask = 0;
-    for (int i = 0; i < number; i++) {
-        mask <<= 1;
-        mask++;
-    }
-    return mask;
-}
-
 /**
  * @brief Turns an array of ascii characters into an savable Huffman coding
  * @param len Length of the inputted string
@@ -148,7 +119,9 @@ char *huffman_encode(size_t len, const char data[len]) {
     for (int i = 0; i < 128; i++) {
         uint64_t index = (uint64_t) 1 << (i % 64);
         if (used_table[(i - 64) > 0] & index) {
-            printf("'%c' -> %s%d%s\n", i, RED, lookup_table[i], WHITE);
+            printf("'%c' -> ", i);
+            print_binary(lookup_table[i]);
+            printf("\n");
         }
     }
     printf("\n");
@@ -186,13 +159,11 @@ char *huffman_encode(size_t len, const char data[len]) {
     int huffman_length = huffman_index * 64 + (64 - available_space_block);
 
     printf("%sEncode tree%s (Huffman Length: %s%d%s)\n", CYAN, WHITE, RED, huffman_length, WHITE); // print (for debugging)
-    for (int i = 0; i < 128; i++) {
-        if ((i * 64) > huffman_length) {
-            break;
-        }
-        printf("%s%llx ", RED, huffman[i]);
+    for (int i = 0; i < 128 && (i * 64) <= huffman_length; i++) {
+        print_binary_with_max(huffman[i]);
+        printf("\n");
     }
-    printf("%s\n\n", WHITE);
+    printf("%s\n", WHITE);
 
     char *buffer = malloc(512 * sizeof(char)); // malloc check
     *cur = 0; // malloc check

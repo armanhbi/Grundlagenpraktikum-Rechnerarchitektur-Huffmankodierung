@@ -1,11 +1,5 @@
 #include "input_output.h"
 
-void file_error(FILE *fd, char *msg) {
-    perror(msg);
-    fclose(fd);
-    exit(EXIT_FAILURE);
-}
-
 /**
  * @brief Reads the data from path into buf
  * @param path Path to the file
@@ -44,6 +38,7 @@ char *read_data(char *path) {
  * @return returns whether or not if worked
  */
 void write_data(char *path, char *result) {
+    printf("\n");
     FILE *fd;
     fd = fopen(path, "w");
     if (fd == NULL) {

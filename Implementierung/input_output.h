@@ -1,15 +1,12 @@
-#ifndef INPUT_OUTPUT_H_
-#define INPUT_OUTPUT_H_
+#ifndef INPUT_OUTPUT_H
+#define INPUT_OUTPUT_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "huffman.h"
-
-#define BUF_LENGTH 1024
-
-void file_error(FILE *fd, char *msg);
+#include "helper.h"
 
 char *read_data(char *path);
 void write_data(char *path, char *result);

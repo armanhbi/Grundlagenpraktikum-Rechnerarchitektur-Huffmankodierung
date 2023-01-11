@@ -7,28 +7,12 @@
 
 #include "huffman.h"
 #include "input_output.h"
-
-// Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
-const char *HELP_MSG = "\nusage: huffman <input_file> [-V version_num] [-B n] [-d] [-o output_file] [-h]\n\n"
-                       "\tinput_file:\t\tPath to input file used for Huffman en-/decoding\n\n"
-                       "\t-V <version_num>:\tImplementation version to use (as number, default: 0)\n"
-                       "\t-B <n>:\t\t\tTime measurement over n rounds (as number)\n"
-                       "\t-d:\t\t\tIf set, decrypting a given Huffman code\n"
-                       "\t-o <output_file>:\tOutput file to write result to\n"
-                       "\t-h:\t\t\tShows this help menu\n\n";
-
-/**
- * @brief Prints help message if arguments not valid (or -h was used)
- */
-void print_help() {
-    perror(HELP_MSG);
-}
+#include "helper.h"
 
 int main(int argc, char **argv) {
-
     // Checking if program and arguments are valid
     if (argc < 2) {
-        print_help();
+        PRINT_HELP_MSG
         return 0;
         //return EXIT_FAILURE;
     }
@@ -54,7 +38,7 @@ int main(int argc, char **argv) {
             case 'B':
                 measure = true;
                 if (optarg == NULL) {
-                    print_help();
+                    PRINT_HELP_MSG
                     return EXIT_FAILURE;
                 }
                 measure_rounds = atoi(optarg);
@@ -67,14 +51,14 @@ int main(int argc, char **argv) {
                 break;
             case 'h':
             default:
-                print_help();
+                PRINT_HELP_MSG
                 return EXIT_FAILURE;
         }
     }
 
     if (optind >= argc) {
         perror("Positional argument 'file' not found\n");
-        print_help();
+        PRINT_HELP_MSG
         return EXIT_FAILURE;
     }
 
@@ -107,7 +91,6 @@ int main(int argc, char **argv) {
     // print (for debugging)
     printf("%sRebuild tree (debug)%s\n", CYAN, WHITE);
     print_tree_inorder(root2);
-    printf("\n");
 
     if (strlen(output_file) && strlen(data)) {
         if (decrypt) {
