@@ -25,6 +25,6 @@ void file_error(FILE *fd, char *msg);
 uint8_t fast_log2(int binary);
 uint8_t createMask(int number);
 void print_binary(char integer);
-void print_binary_with_max(uint64_t integer);
+void print_binary_array(uint64_t *integer, int huffman_length);
 
 #endif

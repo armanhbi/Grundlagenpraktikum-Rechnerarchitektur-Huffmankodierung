@@ -54,12 +54,17 @@ void print_binary(char integer) {
     printf(WHITE);
 }
 
-void print_binary_with_max(uint64_t integer) {
-    uint64_t mask = 0x8000000000000000;
+void print_binary_array(uint64_t huffman[], int huffman_length) {
     printf(MAGENTA);
-    for (int i = 0; i < mask; i++) {
-        putchar((integer & mask) ? '1' : '0');
+    uint64_t mask = 0x8000000000000000;
+    for (int i = 0; i < huffman_length; i++) {
+        if (!mask) {
+            mask = 0x8000000000000000;
+        }
+        int index = (int) ((double) i / 64.0);
+        uint64_t bit_set = (huffman[index] & mask);
+        putchar(bit_set ? '1' : '0');
         mask >>= 1;
     }
-    printf(WHITE);
+    printf("%s\n", WHITE);
 }

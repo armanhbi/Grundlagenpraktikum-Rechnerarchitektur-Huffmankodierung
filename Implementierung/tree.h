@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "helper.h"
+
 struct node {
     char character;
     int frequency;
