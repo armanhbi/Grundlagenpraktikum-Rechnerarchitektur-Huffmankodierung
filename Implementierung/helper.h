@@ -24,6 +24,6 @@
 
 void file_error(FILE *fd, char *msg);
 uint8_t createMask(int number);
-void print_binary(char integer);
+void print_binary(char integer, uint8_t length);
 
 #endif

@@ -1,4 +1,4 @@
-CFLAGS=-O3 -g # -Wall -Wextra
+CFLAGS=-O3 -g -Wall -Wextra
 
 .PHONY: all clean
 all: main

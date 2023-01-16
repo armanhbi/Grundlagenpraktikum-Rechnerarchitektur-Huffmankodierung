@@ -8,7 +8,7 @@
 #include "tree.h"
 #include "input_output.h"
 
-void encode_tree(struct node *tree, char *buffer, int *index);
+int encode_tree(struct node *tree, char *buffer, int *index);
 struct node *decode_tree(char *compressed, int *index);
 
 /**

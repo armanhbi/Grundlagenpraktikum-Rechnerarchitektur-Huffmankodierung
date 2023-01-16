@@ -1,7 +1,7 @@
 #include "input_output.h"
 
 char *read_data(char *path) {
-    FILE *fd;
+    FILE *fd = NULL;
     char *buf = malloc(BUF_LENGTH); // save enough space for up to 1024 characters
 
     if (buf == NULL) { // if malloc did not work

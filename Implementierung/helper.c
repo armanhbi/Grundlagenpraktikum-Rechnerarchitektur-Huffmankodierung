@@ -15,21 +15,15 @@ uint8_t createMask(int number) {
     return mask;
 }
 
-void print_binary(char integer) {
-    uint64_t mask = 0x80;
-    uint8_t no_leading_zero = 0;
+void print_binary(char integer, uint8_t length) {
     printf(MAGENTA);
-    for (int i = 0; mask; i++) {
-        uint8_t bit_set = integer & mask;
 
-        if (bit_set)
-            no_leading_zero = 1;
-        if (no_leading_zero)
-            putchar(bit_set ? '1' : '0');
+    uint64_t mask = 1 << (length - 1);
+
+    for (int i = 0; mask; i++) {
+        putchar(((integer & mask) >> (length - 1 - i)) ? '1' : '0');
         mask >>= 1;
     }
-    if (!no_leading_zero) {
-        putchar('0');
-    }
+
     printf(WHITE);
 }
