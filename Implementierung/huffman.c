@@ -135,5 +135,48 @@ char *huffman_encode(size_t len, const char data[len]) {
 }
 
 char *huffman_decode(size_t len, const char data[len]) {
+    char *buf = malloc(BUF_LENGTH); // save enough space for up to BUF_LENGTH characters
+    uint32_t index = 0;
+    size_t seperator = 0;
+
+    if(!buf){
+        perror("Error: Buffer could not be allocated");
+        return NULL;
+    }
+
+    //find seperator in data of tree and decoding string
+    for(int i = 0; i < len; i++){ //
+        if(data[i] == '\n'){
+            seperator = i;
+            break;
+        }
+    }
+
+    //nothing to decode or no new line in data
+    if(seperator == 0){
+        return buf;
+    }
+
+    //makes tree from data
+    int cur[1] = {0};
+    struct node *tree_root = decode_tree(&data[0], cur);
+
+
+    //
+    for(int i = seperator + 1; i< len;i++){
+        struct node *pointer = tree_root;
+
+        /*if(pointer->left == NULL && pointer->right == NULL) {
+            buf[index] = pointer->character;
+            break; // stimmt das?
+        }*/
+
+        if (data[i] == '0') {
+
+        } else if (data[i] == '1') {
+
+        }
+    }
+
     return "";
 }
