@@ -8,7 +8,19 @@
 #include "huffman.h"
 #include "helper.h"
 
-char *read_data(char *path); // Length up to 65535
+/**
+ * @brief Reads the data from path into buf
+ * @param path Path to the file
+ * @return Returns the string saved in the file (Huffman encoding or normal ascii characters)
+ */
+char *read_data(char *path);
+
+/**
+ * @brief Saves the string in result into path
+ * @param path where the result should be saved
+ * @param result either Huffman encoding or normal ascii string
+ * @return void
+ */
 void write_data(char *path, char *result);
 
 #endif
