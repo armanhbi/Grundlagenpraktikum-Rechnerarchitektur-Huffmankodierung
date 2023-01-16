@@ -63,6 +63,8 @@ int main(int argc, char **argv) {
 
     input_file = argv[optind];
 
+    // STARTING HUFFMAN EN-/DECODING
+
     char *data;
     data = read_data(input_file);
     size_t data_length = strlen(data);
@@ -83,8 +85,7 @@ int main(int argc, char **argv) {
         data = huffman_encode(data_length, data);
     }
 
-    // print (for debugging)
-    printf("\nRETURN VALUE: %s%s%s\n\n", RED, data, WHITE);
+    printf("\nRETURN VALUE: %s%s%s\n\n", RED, data, WHITE); // print (for debugging)
 
     int cur[1] = {0};
     struct node *root2 = decode_tree(data, cur);
@@ -99,7 +100,6 @@ int main(int argc, char **argv) {
             write_data(output_file, data);
         }
     }
-
 
     return EXIT_SUCCESS;
 }

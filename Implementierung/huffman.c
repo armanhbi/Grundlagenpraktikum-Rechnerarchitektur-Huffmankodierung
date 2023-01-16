@@ -48,12 +48,6 @@ struct node *decode_tree(char *compressed, int *index) {
     return cur_node;
 }
 
-/**
- * @brief Turns an array of ascii characters into an savable Huffman coding
- * @param len Length of the inputted string
- * @param data Array of ascii characters
- * @return Returns a string consisting of binary code AND tree
- */
 char *huffman_encode(size_t len, const char data[len]) {
     int table[128] = {0}; // create table (same as ascii table)
 
@@ -117,7 +111,7 @@ char *huffman_encode(size_t len, const char data[len]) {
     }
     printf("\n");
 
-    char huffman[BUF_LENGTH] = {0};
+    char *huffman = malloc(BUF_LENGTH * sizeof(char)); // malloc check
 
     int huffman_index = 0;
     for (int i = 0; i < len; i++) {
@@ -139,22 +133,14 @@ char *huffman_encode(size_t len, const char data[len]) {
     }
     printf("%s\n\n", WHITE);
 
-    char *buffer = malloc(512 * sizeof(char)); // malloc check
+    char *buffer = malloc(COMPRESSED_TREE_LENGTH * sizeof(char)); // malloc check
     int index[1] = {0};
     printf("%sCompressed tree%s\n", CYAN, WHITE); // print (for debugging)
     encode_tree(root, buffer, index);
 
-    return buffer;
+    return huffman;
 }
 
-/**
- * @brief Turns the Huffman code to a human readable string of ascii characters
- * @param len Length of the inputted string
- * @param data Formatted Huffman code (given as a string)
- * @return Returns a human readable string
- *
- * @details Formatted Huffman code has to include binary code AND tree (maybe even length of binary map)
- */
 char *huffman_decode(size_t len, const char data[len]) {
     return "";
 }

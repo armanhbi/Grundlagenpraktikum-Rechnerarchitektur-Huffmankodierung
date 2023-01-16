@@ -19,7 +19,7 @@ char *read_data(char *path);
  * @brief Saves the string in result into path
  * @param path where the result should be saved
  * @param result either Huffman encoding or normal ascii string
- * @return returns whether or not if worked
+ * @return void
  */
 void write_data(char *path, char *result);
 

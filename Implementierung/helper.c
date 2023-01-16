@@ -6,26 +6,6 @@ void file_error(FILE *fd, char *msg) {
     exit(EXIT_FAILURE);
 }
 
-uint8_t fast_log2(int binary) {
-    if (binary == 0 || binary == 1)
-        return 1;
-    if (binary == 2 || binary == 3)
-        return 2;
-    if (binary >= 4 && binary <= 7)
-        return 3;
-    if (binary >= 8 && binary <= 15)
-        return 4;
-    if (binary >= 16 && binary <= 31)
-        return 5;
-    if (binary >= 32 && binary <= 63)
-        return 6;
-    if (binary >= 64 && binary <= 127)
-        return 7;
-    if (binary >= 128 && binary <= 256)
-        return 8;
-    return -1;
-}
-
 uint8_t createMask(int number) {
     uint8_t mask = 0;
     for (int i = 0; i < number; i++) {
@@ -52,19 +32,4 @@ void print_binary(char integer) {
         putchar('0');
     }
     printf(WHITE);
-}
-
-void print_binary_array(uint64_t huffman[], int huffman_length) {
-    printf(MAGENTA);
-    uint64_t mask = 0x8000000000000000;
-    for (int i = 0; i < huffman_length; i++) {
-        if (!mask) {
-            mask = 0x8000000000000000;
-        }
-        int index = (int) ((double) i / 64.0);
-        uint64_t bit_set = (huffman[index] & mask);
-        putchar(bit_set ? '1' : '0');
-        mask >>= 1;
-    }
-    printf("%s\n", WHITE);
 }
