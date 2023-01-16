@@ -1,6 +1,6 @@
 #include "huffman.h"
 
-void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
+void encode_tree(struct node *tree, char *buffer, int *cur) {
     if (tree->right == NULL && tree->left == NULL) {
         char character = tree->character;
         buffer[(*cur)++] = '1';
@@ -17,11 +17,11 @@ void encode_tree_to_string(struct node *tree, char *buffer, int *cur) {
     }
     buffer[(*cur)++] = '0';
     printf("0 ");
-    encode_tree_to_string(tree->left, buffer, cur);
-    encode_tree_to_string(tree->right, buffer, cur);
+    encode_tree(tree->left, buffer, cur);
+    encode_tree(tree->right, buffer, cur);
 }
 
-struct node *decode_string_to_tree(char *compressed, int *cur) {
+struct node *decode_tree(char *compressed, int *cur) {
     struct node *cur_node = create_node('\0', 0);
     cur_node->left = NULL;
     cur_node->right = NULL;
@@ -40,9 +40,9 @@ struct node *decode_string_to_tree(char *compressed, int *cur) {
             return cur_node;
         }
         ++(*cur);
-        cur_node->left = decode_string_to_tree(compressed, cur);
+        cur_node->left = decode_tree(compressed, cur);
         ++(*cur);
-        cur_node->right = decode_string_to_tree(compressed, cur);
+        cur_node->right = decode_tree(compressed, cur);
         (*cur)++;
     }
     return cur_node;
@@ -104,69 +104,48 @@ char *huffman_encode(size_t len, const char data[len]) {
     printf("\n");
 
     // turn tree to dictionary
-    uint64_t *used_table = malloc(2 * sizeof(uint64_t));
-    char *lookup_table = malloc(128 * sizeof(char)); // malloc check
-    int *cur = malloc(sizeof(int));
-    tree_to_dic(root, used_table, lookup_table, 0);
-    print_binary_array(used_table, 128);
+    uint8_t length_table[128] = {0};
+    uint16_t lookup_table[128] = {0};
+
+    int cur[1] = {0};
+    tree_to_dic(root, length_table, lookup_table, 0, 0);
 
     // print (for debugging)
     printf("%sDictionary%s\n", CYAN, WHITE);
-    uint64_t mask = 0x8000000000000000;
     for (int i = 0; i < 128; i++) {
-        if (!mask)
-            mask = 0x8000000000000000;
-        int index = (int) (double) i / 64.0;
-        if (used_table[index] & mask) {
+        if (length_table[i] != 0) {
             printf("'%c' -> ", i);
             print_binary(lookup_table[i]);
+            printf(" (Länge: %d)", length_table[i]);
             printf("\n");
         }
-        mask>>=1;
     }
     printf("\n");
 
-    uint64_t huffman[128 * sizeof(uint64_t)] = {0}; // nicht mehr als 8192 bytes möglich
+    char *huffman = malloc(65536 * sizeof(char));
 
     int huffman_index = 0;
-    uint8_t available_space_block = 64;
     for (int i = 0; i < len; i++) {
-        uint8_t code = lookup_table[data[i]];
-        uint8_t to_log = fast_log2(code); // wieviel platz brauchen die bits
+        uint16_t code = lookup_table[data[i]];
+        uint16_t mask = 0x8000;
 
-        if (available_space_block >= to_log) { // wenn im block genug platz verfügbar ist
-
-            huffman[huffman_index] <<= to_log; // shift
-            huffman[huffman_index] |= code; // combine (with logical OR)
-            available_space_block -= to_log;
-
-        } else {
-
-            huffman[huffman_index] <<= available_space_block; // soviel wie vorhanden shiften
-            to_log -= available_space_block;
-            huffman[huffman_index] |= ((code & (createMask(available_space_block)
-                    << to_log)) >> to_log); // die ersten available_space_block stellen
-
-            huffman_index += 1;
-
-            huffman[huffman_index] |= (code & createMask(to_log)); // die letzten to_log stellen
-            available_space_block = 64 - to_log;
-
+        while (code) {
+            huffman[huffman_index++] = (code & mask) ? '1' : '0';
+            code<<=1;
         }
     }
-    huffman[huffman_index] <<= available_space_block;
-    int huffman_length = huffman_index * 64 + (64 - available_space_block);
 
-    printf("%sEncode tree%s (Huffman Length: %s%d%s)\n", CYAN, WHITE, RED, huffman_length, WHITE); // print (for debugging)
-    print_binary_array(huffman, huffman_length);
+    printf("%sEncode tree%s (Huffman Length: %s%d%s)%s\n", CYAN, WHITE, RED, huffman_index, WHITE, RED); // print (for debugging)
+    for (int i = 0; i < huffman_index; i++) {
+        printf("%c", huffman[i]);
+    }
     printf("%s\n", WHITE);
 
     char *buffer = malloc(512 * sizeof(char)); // malloc check
-    *cur = 0; // malloc check
+    *cur = 0;
     printf("%sCompressed tree%s\n", CYAN, WHITE); // print (for debugging)
-    encode_tree_to_string(root, buffer, cur);
+    encode_tree(root, buffer, cur);
 
-    free(cur);
     return buffer;
 }
 

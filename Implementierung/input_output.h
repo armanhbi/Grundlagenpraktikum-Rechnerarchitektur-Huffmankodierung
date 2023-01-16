@@ -8,10 +8,7 @@
 #include "huffman.h"
 #include "helper.h"
 
-char *read_data(char *path);
+char *read_data(char *path); // Length up to 65535
 void write_data(char *path, char *result);
-
-char *read_binary(char *path);
-void write_binary(char *path, char *result);
 
 #endif

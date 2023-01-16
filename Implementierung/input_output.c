@@ -52,11 +52,3 @@ void write_data(char *path, char *result) {
     }
     fclose(fd);
 }
-
-char *read_binary(char *path) {
-    return read_data(path);
-}
-
-void write_binary(char *path, char *result) {
-    write_data(path, result);
-}

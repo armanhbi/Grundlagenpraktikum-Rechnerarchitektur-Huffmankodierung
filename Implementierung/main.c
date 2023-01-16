@@ -13,8 +13,7 @@ int main(int argc, char **argv) {
     // Checking if program and arguments are valid
     if (argc < 2) {
         PRINT_HELP_MSG
-        return 0;
-        //return EXIT_FAILURE;
+        return EXIT_FAILURE;
     }
 
     int impl_num = 0;
@@ -22,7 +21,7 @@ int main(int argc, char **argv) {
     int measure_rounds = 0;
     char *input_file;
     bool decrypt = false;
-    char *output_file = "\0";
+    char *output_file;
 
     // --help for -h
     static struct option help_synonym[] = {
@@ -31,7 +30,7 @@ int main(int argc, char **argv) {
 
     int opt;
     while ((opt = getopt_long(argc, argv, "V:B:o:dh", help_synonym, NULL)) != -1) {
-        switch(opt) {
+        switch (opt) {
             case 'V':
                 impl_num = atoi(optarg);
                 break;
@@ -65,15 +64,17 @@ int main(int argc, char **argv) {
     input_file = argv[optind];
 
     char *data;
-    if (decrypt) {
-        data = read_binary(input_file);
-    } else {
-        data = read_data(input_file);
-    }
+    data = read_data(input_file);
     size_t data_length = strlen(data);
 
     // print (for debugging)
     printf("\n%sBasic Information%s", CYAN, WHITE);
+    printf("\nInput File: %s", input_file);
+    printf("\nVersion: %d", impl_num);
+    printf("\nTesting: %s (with %d rounds)", measure ? "true" : "false", measure_rounds);
+    printf("\nDecrypt: %s", decrypt ? "true" : "false");
+    printf("\nOutput File: %s\n", output_file);
+
     printf("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, data_length, WHITE);
 
     if (decrypt) {
@@ -82,13 +83,12 @@ int main(int argc, char **argv) {
         data = huffman_encode(data_length, data);
     }
 
-    printf("\nRETURN VALUE: %s%s%s\n", RED, data, WHITE);
-    printf("\n");
-
-    int *cur2 = malloc(1); // malloc check
-    struct node *root2 = decode_string_to_tree(data, cur2);
-
     // print (for debugging)
+    printf("\nRETURN VALUE: %s%s%s\n\n", RED, data, WHITE);
+
+    int cur[1] = {0};
+    struct node *root2 = decode_tree(data, cur);
+
     printf("%sRebuild tree (debug)%s\n", CYAN, WHITE);
     print_tree_inorder(root2);
 
@@ -96,9 +96,10 @@ int main(int argc, char **argv) {
         if (decrypt) {
             write_data(output_file, data);
         } else {
-            write_binary(output_file, data);
+            write_data(output_file, data);
         }
     }
+
 
     return EXIT_SUCCESS;
 }

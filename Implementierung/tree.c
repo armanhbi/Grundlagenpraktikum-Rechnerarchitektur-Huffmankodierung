@@ -33,19 +33,20 @@ void print_tree_inorder(struct node *root) {
     print_tree_inorder(root->right);
 }
 
-void tree_to_dic(struct node *root, uint64_t *used_table, char *lookup_table, uint8_t location) {
+void tree_to_dic(struct node *root, uint8_t *length_table, uint16_t *lookup_table, uint16_t path, uint8_t cur_length) {
     if (!root) {
         return;
     }
-    tree_to_dic(root->left, used_table, lookup_table, (location << 1));
+
+    tree_to_dic(root->left, length_table, lookup_table, (path << 1), cur_length + 1);
+
     if (root->character) {
-        uint64_t mask = (uint64_t) 1 << (63 - (root->character % 64));
-        int index = (int) ((double) root->character / 64.0);
-        used_table[index] |= mask;
-        lookup_table[root->character] = location;
+        length_table[root->character] = cur_length;
+        lookup_table[root->character] = path;
     }
-    uint8_t temp_loc = location;
-    temp_loc<<=1;
-    temp_loc++;
-    tree_to_dic(root->right, used_table, lookup_table, temp_loc);
+
+    uint16_t temp_path = path;
+    temp_path<<=1;
+    temp_path++;
+    tree_to_dic(root->right, length_table, lookup_table, temp_path, cur_length + 1);
 }
