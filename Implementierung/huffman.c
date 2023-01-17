@@ -22,7 +22,7 @@ int encode_tree(struct node *tree, char *buffer, int *index) {
     return *index;
 }
 
-struct node *decode_tree(char *compressed, int *index) {
+struct node *decode_tree(const char *compressed, int *index) {
     struct node *cur_node = create_node('\0', 0);
     cur_node->left = NULL;
     cur_node->right = NULL;
@@ -145,8 +145,8 @@ char *huffman_decode(size_t len, const char data[len]) {
     }
 
     //find seperator in data of tree and decoding string
-    for(int i = 0; i < len; i++){ //
-        if(data[i] == '\n'){
+    for (size_t i = 0; i < len; i++) { //
+        if (data[i] == '\n') {
             seperator = i;
             break;
         }
@@ -157,26 +157,33 @@ char *huffman_decode(size_t len, const char data[len]) {
         return buf;
     }
 
-    //makes tree from data
+    //build tree from data
     int cur[1] = {0};
     struct node *tree_root = decode_tree(&data[0], cur);
 
 
     //
-    for(int i = seperator + 1; i< len;i++){
-        struct node *pointer = tree_root;
-
+    struct node *pointer = tree_root;
+    for(size_t i = seperator + 1; i< len;i++){
         /*if(pointer->left == NULL && pointer->right == NULL) {
             buf[index] = pointer->character;
             break; // stimmt das?
         }*/
 
         if (data[i] == '0') {
-
+            pointer = pointer->left;
+            if(pointer->left == NULL && pointer->right == NULL) {
+                buf[index] = pointer->character;
+                pointer = tree_root;
+            }
         } else if (data[i] == '1') {
-
+            pointer = pointer->right;
+            if(pointer->left == NULL && pointer->right == NULL) {
+                buf[index] = pointer->character;
+                pointer = tree_root;
+            }
         }
     }
 
-    return "";
+    return buf;
 }

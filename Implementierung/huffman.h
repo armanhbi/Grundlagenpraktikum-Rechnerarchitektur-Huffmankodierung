@@ -9,7 +9,7 @@
 #include "input_output.h"
 
 int encode_tree(struct node *tree, char *buffer, int *index);
-struct node *decode_tree(char *compressed, int *index);
+struct node *decode_tree(const char *compressed, int *index);
 
 /**
  * @brief Turns an array of ascii characters into an savable Huffman coding
