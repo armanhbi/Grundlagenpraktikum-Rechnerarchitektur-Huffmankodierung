@@ -14,6 +14,7 @@ struct Node {
 };
 typedef struct Node Node;
 
+// no briefs because might be changed
 Node *create_node(char character, int frequency);
 Node *add_node(Node *root, Node *toInsert);
 void print_tree_inorder(Node *root);

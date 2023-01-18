@@ -23,8 +23,18 @@
 #define GREEN "\033[32m"
 #define MAGENTA "\033[35m"
 
+/**
+ * @brief Prints error message, closes file descriptor (if still open) and exits (with failure)
+ * @param fd File descriptor (pointer to file)
+ * @param msg String of error message
+ */
 void file_error(FILE *fd, char *msg);
-uint8_t createMask(int number);
+
+/**
+ * @brief Prints a character as binary (with set length)
+ * @param integer ASCII Character encoded as integer
+ * @param length Length of binary code
+ */
 void print_binary(char integer, uint8_t length);
 
 #endif
