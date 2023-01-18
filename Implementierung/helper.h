@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
 #define BUF_LENGTH 65535
