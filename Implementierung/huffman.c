@@ -173,13 +173,13 @@ char *huffman_decode(size_t len, const char data[len]) {
         if (data[i] == '0') {
             pointer = pointer->left;
             if(pointer->left == NULL && pointer->right == NULL) {
-                buf[index] = pointer->character;
+                buf[index++] = pointer->character;
                 pointer = tree_root;
             }
         } else if (data[i] == '1') {
             pointer = pointer->right;
             if(pointer->left == NULL && pointer->right == NULL) {
-                buf[index] = pointer->character;
+                buf[index++] = pointer->character;
                 pointer = tree_root;
             }
         }
