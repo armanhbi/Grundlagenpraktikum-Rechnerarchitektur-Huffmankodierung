@@ -16,11 +16,11 @@
                        "\t-o <output_file>:\tOutput file to write result to\n"\
                        "\t-h:\t\t\tShows this help menu\n\n");
 
-#define RED "\x1b[31m"
-#define WHITE "\x1B[37m"
-#define CYAN "\x1B[36m"
-#define GREEN "\x1B[32m"
-#define MAGENTA "\x1B[35m"
+#define RED "\033[31m"
+#define WHITE "\033[97m"
+#define CYAN "\033[36m"
+#define GREEN "\033[32m"
+#define MAGENTA "\033[35m"
 
 void file_error(FILE *fd, char *msg);
 uint8_t createMask(int number);

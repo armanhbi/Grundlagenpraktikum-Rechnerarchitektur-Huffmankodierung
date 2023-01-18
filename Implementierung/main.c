@@ -89,10 +89,11 @@ int main(int argc, char **argv) {
     printf("%s%s%s\n\n", RED, data, WHITE);
 
     int cur[1] = {0};
-    struct node *root = decode_tree(data, cur);
+    Node *root = decode_tree(data, cur);
 
     printf("%sRebuild tree (debug)%s\n", CYAN, WHITE);
     print_tree_inorder(root);
+    printf("\n");
 
     if (strlen(output_file) && strlen(data)) {
         if (decrypt) {

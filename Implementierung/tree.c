@@ -1,7 +1,7 @@
 #include "tree.h"
 
-struct node *create_node(char character, int frequency) {
-    struct node *created_node = malloc(sizeof(struct node)); // save enough memory for a new node
+Node *create_node(char character, int frequency) {
+    Node *created_node = malloc(sizeof(Node)); // save enough memory for a new node
     if (!created_node) { // check malloc
         return NULL;
     }
@@ -12,8 +12,8 @@ struct node *create_node(char character, int frequency) {
     return created_node;
 }
 
-struct node *add_node(struct node *root, struct node *toInsert) {
-    struct node *new_root = malloc(sizeof(struct node)); // save enough memory for a new node
+Node *add_node(Node *root, Node *toInsert) {
+    Node *new_root = malloc(sizeof(Node)); // save enough memory for a new node
     if (!new_root) { // check malloc
         return NULL;
     }
@@ -24,7 +24,7 @@ struct node *add_node(struct node *root, struct node *toInsert) {
     return new_root;
 }
 
-void print_tree_inorder(struct node *root) {
+void print_tree_inorder(Node *root) {
     if (!root) { // recursion termination condition
         return;
     }
@@ -33,7 +33,7 @@ void print_tree_inorder(struct node *root) {
     print_tree_inorder(root->right);// iterate through right side
 }
 
-void tree_to_dic(struct node *root, uint8_t *length_table, uint16_t *lookup_table, uint16_t path, uint8_t cur_length) {
+void tree_to_dic(Node *root, uint8_t *length_table, uint16_t *lookup_table, uint16_t path, uint8_t cur_length) {
     if (!root) { // recursion termination condition
         return;
     }

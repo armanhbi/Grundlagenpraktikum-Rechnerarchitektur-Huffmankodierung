@@ -1,6 +1,6 @@
 #include "huffman.h"
 
-int encode_tree(struct node *tree, char *buffer, int *index) {
+int encode_tree(Node *tree, char *buffer, int *index) {
     if (tree->right == NULL && tree->left == NULL) {
         char character = tree->character;
         buffer[(*index)++] = '1';
@@ -22,8 +22,8 @@ int encode_tree(struct node *tree, char *buffer, int *index) {
     return *index;
 }
 
-struct node *decode_tree(char *compressed, int *index) {
-    struct node *cur_node = create_node('\0', 0);
+Node *decode_tree(char *compressed, int *index) {
+    Node *cur_node = create_node('\0', 0);
     cur_node->left = NULL;
     cur_node->right = NULL;
 
@@ -63,7 +63,7 @@ char *huffman_encode(size_t len, const char data[len]) {
     }
     printf("\n");
 
-    struct node *root = NULL; // create tree
+    Node *root = NULL; // create tree
 
     // Fill table with values (search minIndex and use it and set it to 0)
     while (1) {
@@ -103,13 +103,13 @@ char *huffman_encode(size_t len, const char data[len]) {
     huffman[huffman_index++] = '\n';
 
     // turn tree to dictionary
-    uint8_t length_table[128] = {0};
+    uint8_t length_table[128] = {0}; // auch in 3 bit darstellbar -> maximal 8 ()
     uint16_t lookup_table[128] = {0};
 
     tree_to_dic(root, length_table, lookup_table, 0, 0);
 
     // print (for debugging)
-    printf("%sDictionary%s\n", CYAN, WHITE);
+    printf("\n\n%sDictionary%s\n", CYAN, WHITE);
     for (int i = 0; i < 128; i++) {
         if (length_table[i] != 0) {
             printf("'%c' -> ", i);
