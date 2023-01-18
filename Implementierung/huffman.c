@@ -27,7 +27,7 @@ Node *decode_tree(const char *compressed, int *index) {
     cur_node->left = NULL;
     cur_node->right = NULL;
 
-    while (compressed[*index] != '\n' && *index < 100) {
+    while (compressed[*index] != '\n') {
         if (compressed[*index] == 49) { // ascii for '1'
             char character = '\0';
             for (int i = 1; i < 9; i++) {
@@ -145,7 +145,7 @@ char *huffman_decode(size_t len, const char data[len]) {
     }
 
     //find seperator in data of tree and decoding string
-    for (size_t i = 0; i < len; i++) { //
+    for (size_t i = 0; i < len; i++) {
         if (data[i] == '\n') {
             seperator = i;
             break;
@@ -161,6 +161,7 @@ char *huffman_decode(size_t len, const char data[len]) {
     int cur[1] = {0};
     Node *tree_root = decode_tree(&data[0], cur);
 
+    // print (for debugging)
     printf("%sRebuilding tree%s\n", CYAN, WHITE);
     print_tree_inorder(tree_root);
     printf("\n\n");
