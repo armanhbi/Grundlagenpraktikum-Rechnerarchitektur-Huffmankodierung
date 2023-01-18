@@ -22,7 +22,7 @@ int encode_tree(Node *tree, char *buffer, int *index) {
     return *index;
 }
 
-Node *decode_tree(const char *compressed, int *index) {
+Node *decode_tree(char *compressed, int *index) {
     Node *cur_node = create_node('\0', 0);
     cur_node->left = NULL;
     cur_node->right = NULL;
@@ -159,11 +159,12 @@ char *huffman_decode(size_t len, const char data[len]) {
 
     //build tree from data
     int cur[1] = {0};
-    struct node *tree_root = decode_tree(&data[0], cur);
+    char *tree = &data[0];
+    Node *tree_root = decode_tree(tree, cur);
 
 
     //
-    struct node *pointer = tree_root;
+    Node *pointer = tree_root;
     for(size_t i = seperator + 1; i< len;i++){
         /*if(pointer->left == NULL && pointer->right == NULL) {
             buf[index] = pointer->character;
