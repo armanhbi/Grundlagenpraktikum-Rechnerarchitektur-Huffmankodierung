@@ -139,7 +139,7 @@ char *huffman_decode(size_t len, const char data[len]) {
     uint32_t index = 0;
     size_t seperator = 0;
 
-    if(!buf){
+    if (!buf) {
         perror("Error: Buffer could not be allocated");
         return NULL;
     }
@@ -153,32 +153,29 @@ char *huffman_decode(size_t len, const char data[len]) {
     }
 
     //nothing to decode or no new line in data
-    if(seperator == 0){
+    if (seperator == 0) {
         return buf;
     }
 
     //build tree from data
     int cur[1] = {0};
-    struct node *tree_root = decode_tree(&data[0], cur);
+    Node *tree_root = decode_tree(&data[0], cur);
 
+    printf("%sRebuilding tree%s\n", CYAN, WHITE);
+    print_tree_inorder(tree_root);
+    printf("\n\n");
 
-    //
-    struct node *pointer = tree_root;
-    for(size_t i = seperator + 1; i< len;i++){
-        /*if(pointer->left == NULL && pointer->right == NULL) {
-            buf[index] = pointer->character;
-            break; // stimmt das?
-        }*/
-
+    Node *pointer = tree_root;
+    for (size_t i = seperator + 1; i < len; i++) {
         if (data[i] == '0') {
             pointer = pointer->left;
-            if(pointer->left == NULL && pointer->right == NULL) {
+            if (pointer->left == NULL && pointer->right == NULL) {
                 buf[index++] = pointer->character;
                 pointer = tree_root;
             }
         } else if (data[i] == '1') {
             pointer = pointer->right;
-            if(pointer->left == NULL && pointer->right == NULL) {
+            if (pointer->left == NULL && pointer->right == NULL) {
                 buf[index++] = pointer->character;
                 pointer = tree_root;
             }
