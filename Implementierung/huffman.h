@@ -7,6 +7,7 @@
 #include "helper.h"
 #include "tree.h"
 #include "input_output.h"
+#include "heap.h"
 
 /**
  * @brief Compresses the tree data structure into an bit code (Inspiration: https://stackoverflow.com/questions/759707/efficient-way-of-storing-huffman-tree)

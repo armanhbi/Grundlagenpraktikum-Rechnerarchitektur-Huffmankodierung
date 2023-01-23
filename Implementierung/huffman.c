@@ -48,44 +48,45 @@ Node *decode_tree(const char *compressed, int *index) {
 }
 
 char *huffman_encode(size_t len, const char data[len]) {
-    int table[128] = {0}; // create table (same as ascii table)
+    Node* table[128] = {0}; // create table (same as ascii table)
 
     for (size_t i = 0; i < len; i++) {
-        table[(int) data[i]] += 1; // increment for every letter (counting appearance)
+        if (table[(uint8_t) data[i]] == NULL) {
+            table[(uint8_t) data[i]] = create_node(data[i], 1);
+        } else {
+            table[(uint8_t) data[i]]->frequency += 1; // increment for every letter (counting appearance)
+        }
     }
+
+    Heap *heap = create_heap(HEAP_SIZE); //Min Heap
 
     // print (for debugging)
     printf("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
     for (int i = 0; i < 128; i++) {
-        int frequency = table[i];
-        if (frequency != 0)
-            printf("Der '%c' kommt %s%d%s mal vor!\n", i, RED, table[i], WHITE);
+
+        if (table[i] == 0x0) // if pointer is null
+            continue;
+
+        int frequency = table[i]->frequency;
+        if (frequency != 0) {
+            printf("Der '%c' kommt %s%d%s mal vor!\n", i, RED, frequency, WHITE);
+            insert(heap, table[i]);
+        }
     }
     printf("\n");
 
-    Node *root = NULL; // create tree
+    while(heap->count > 1) { // check ausser es gibt keine 2 nodes
+        Node *min1 = pop_min(heap);
+        Node *min2 = pop_min(heap);
 
-    // Fill table with values (search minIndex and use it and set it to 0)
-    while (1) {
-        int minIndex = -1;
-        for (int i = 0; i < 128; i++) {
-            int cur_frequency = table[i];
-            if (cur_frequency != 0 && (minIndex == -1 || cur_frequency < table[minIndex])) {
-                minIndex = i;
-            }
-        }
-        if (minIndex == -1) {
-            break;
-        }
+        Node *connector = create_node('\0', min1->frequency + min2->frequency);
+        connector->left = min1;
+        connector->right = min2;
 
-        if (!root) {
-            root = create_node(minIndex, table[minIndex]);
-        } else {
-            root = add_node(root, create_node(minIndex, table[minIndex]));
-        }
-
-        table[minIndex] = 0;
+        insert(heap, connector);
     }
+
+    Node *root = pop_min(heap);
 
     // print (for debugging)
     printf("%sTree creation%s\n", CYAN, WHITE);
