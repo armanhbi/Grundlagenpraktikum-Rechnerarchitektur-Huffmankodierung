@@ -8,16 +8,15 @@
 
 struct Node {
     char character;
-    int frequency;
+    uint16_t frequency;
     struct Node *left;
     struct Node *right;
 };
 typedef struct Node Node;
 
 // no briefs because might be changed
-Node *create_node(char character, int frequency);
-Node *add_node(Node *root, Node *toInsert);
+Node *create_node(char character, uint16_t frequency, Node *left, Node *right);
 void print_tree_inorder(Node *root);
-void tree_to_dic(Node *root, uint8_t *length_table, uint16_t *lookup_table, uint16_t location, uint8_t cur_length);
+void tree_to_dic(Node *root, uint8_t *length_table, int *lookup_table, int location, uint8_t cur_length);
 
 #endif

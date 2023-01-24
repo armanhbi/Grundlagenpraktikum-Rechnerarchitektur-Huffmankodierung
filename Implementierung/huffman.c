@@ -23,11 +23,11 @@ int encode_tree(Node *tree, char *buffer, int *index) {
 }
 
 Node *decode_tree(const char *compressed, int *index) {
-    Node *cur_node = create_node('\0', 0); // Create the upper node (always \0)
+    Node *cur_node = create_node('\0', 0, NULL, NULL); // Create the upper node (always \0)
     cur_node->left = NULL;
     cur_node->right = NULL;
 
-    while (compressed[*index] != '\n') { // iterate through the buffer
+    if (compressed[*index] != '\n') { // iterate through the buffer
         if (compressed[*index] == 49) { // ascii for '1' (8 bit character follows)
             char character = '\0';
             for (int i = 1; i < 9; i++) {
@@ -43,16 +43,17 @@ Node *decode_tree(const char *compressed, int *index) {
         ++(*index);
         cur_node->left = decode_tree(compressed, index); // recursion for left first than right side
         cur_node->right = decode_tree(compressed, index);
+        print_tree_inorder(cur_node);
     }
     return cur_node; // return upper root node/tree
 }
 
 char *huffman_encode(size_t len, const char data[len]) {
-    Node* table[128] = {0}; // create table (same as ascii table)
+    Node* table[HEAP_SIZE] = {0}; // create table (same as unicode table (8 bits))
 
     for (size_t i = 0; i < len; i++) {
         if (table[(uint8_t) data[i]] == NULL) {
-            table[(uint8_t) data[i]] = create_node(data[i], 1);
+            table[(uint8_t) data[i]] = create_node(data[i], 1, NULL, NULL);
         } else {
             table[(uint8_t) data[i]]->frequency += 1; // increment for every letter (counting appearance)
         }
@@ -62,12 +63,12 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     // print (for debugging)
     printf("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
-    for (int i = 0; i < 128; i++) {
+    for (uint16_t i = 0; i < 256; i++) {
 
         if (table[i] == 0x0) // if pointer is null
             continue;
 
-        int frequency = table[i]->frequency;
+        uint16_t frequency = table[i]->frequency;
         if (frequency != 0) {
             printf("Der '%c' kommt %s%d%s mal vor!\n", i, RED, frequency, WHITE);
             insert(heap, table[i]);
@@ -75,13 +76,11 @@ char *huffman_encode(size_t len, const char data[len]) {
     }
     printf("\n");
 
-    while(heap->count > 1) { // check ausser es gibt keine 2 nodes
+    while(heap->count > 1) { // kombiniere außer es gibt keine 2 nodes
         Node *min1 = pop_min(heap);
         Node *min2 = pop_min(heap);
 
-        Node *connector = create_node('\0', min1->frequency + min2->frequency);
-        connector->left = min1;
-        connector->right = min2;
+        Node *connector = create_node('\0', min1->frequency + min2->frequency, min1, min2);
 
         insert(heap, connector);
     }
@@ -105,13 +104,13 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     // turn tree to dictionary
     uint8_t length_table[128] = {0}; // savable in 3 bits -> max. length of 8
-    uint16_t lookup_table[128] = {0};
+    int lookup_table[128] = {0};
 
     tree_to_dic(root, length_table, lookup_table, 0, 0);
 
     // print (for debugging)
     printf("\n\n%sDictionary%s\n", CYAN, WHITE);
-    for (int i = 0; i < 128; i++) {
+    for (uint8_t i = 0; i < 128; i++) {
         if (length_table[i] != 0) {
             printf("'%c' -> ", i);
             print_binary(lookup_table[i], length_table[i]);
@@ -123,9 +122,9 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     // code (and length of it) of every letter
     for (size_t i = 0; i < len; i++) {
-        uint16_t code = lookup_table[(uint16_t) data[i]];
+        int code = lookup_table[(uint16_t) data[i]];
         uint8_t length = length_table[(uint8_t) data[i]];
-        uint16_t mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
+        int mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
 
         for (int i = 0; mask; i++) {
             huffman[huffman_index++] = ((code & mask) >> (length - 1 - i)) ? '1' : '0'; // translate character to binary
@@ -138,11 +137,11 @@ char *huffman_encode(size_t len, const char data[len]) {
 
 char *huffman_decode(size_t len, const char data[len]) {
     char *buf = malloc(BUF_LENGTH); // save enough space for up to BUF_LENGTH characters
-    uint32_t index = 0;
+    int index = 0;
     size_t seperator = 0;
 
     if (!buf) {
-        perror("Error: Buffer could not be allocated");
+        perror("Memory Error: Buffer could not be allocated");
         return NULL;
     }
 

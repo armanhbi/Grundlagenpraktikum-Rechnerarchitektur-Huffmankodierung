@@ -6,7 +6,7 @@
 
 #include "tree.h"
 
-#define HEAP_SIZE 128
+#define HEAP_SIZE 256
 
 struct Heap {
     Node **arr;

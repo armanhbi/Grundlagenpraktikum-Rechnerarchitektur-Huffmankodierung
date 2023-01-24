@@ -89,11 +89,7 @@ int main(int argc, char **argv) {
     printf("'%s%s%s'\n", RED, data, WHITE);
 
     if (strlen(output_file) && strlen(data)) {
-        if (decrypt) {
-            write_data(output_file, data);
-        } else {
-            write_data(output_file, data);
-        }
+        write_data(output_file, data);
     }
 
     return EXIT_SUCCESS;

@@ -14,7 +14,7 @@ char *read_data(char *path) {
         file_error(fd, "An error occurred while trying to get the file descriptor. (Does it exist?)\n");
     }
 
-    uint16_t i = 0;
+    int i = 0;
     while (1) {
         char c = fgetc(fd); // read each character individually
         if (c == '\0' || feof(fd) || i == BUF_LENGTH) // end was hit or \0 was hit or text extended BUFFER LENGTH (should rarely happen)

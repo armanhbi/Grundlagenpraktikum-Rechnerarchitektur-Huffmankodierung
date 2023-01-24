@@ -1,29 +1,9 @@
 /* Sudhanshu Patel sudhanshuptl13@gmail.com */
 /*
-Min Heap implementation in c
+Modified Min Heap implementation in c from https://gist.github.com/sudhanshuptl/d86da25da46aa3d060e7be876bbdb343
 */
 
 #include "heap.h"
-
-//int main() {
-//    int i;
-//    Heap *heap = create_heap(HEAP_SIZE, 0); //Min Heap
-//    if (heap == NULL) {
-//        printf("__Memory Issue____\n");
-//        return -1;
-//    }
-//
-//    for (i = 9; i > 0; i--)
-//        insert(heap, i);
-//
-//    print(heap);
-//
-//    for (i = 9; i >= 0; i--) {
-//        printf(" Pop Minima : %d\n", pop_min(heap));
-//        print(heap);
-//    }
-//    return 0;
-//}
 
 Heap *create_heap(int capacity) {
     Heap *h = (Heap *) malloc(sizeof(Heap)); //one is number of heap
