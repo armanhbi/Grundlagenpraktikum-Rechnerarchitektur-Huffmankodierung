@@ -4,9 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "helper.h"
+#include "printer.h"
 #include "tree.h"
-#include "input_output.h"
 #include "heap.h"
 
 /**
@@ -16,7 +15,7 @@
  * @param index Pointer to an integer pointing to the next free space in buffer (needed for recursion purposes only) (fuck C-language)
  * @return Length of the bit code
  */
-int encode_tree(Node *tree, char *buffer, int *index);
+uint32_t encode_tree(Node *tree, char *buffer, uint32_t *index);
 
 /**
  * @brief Decodes the compressed tree (as a string) back to a binary tree
@@ -24,7 +23,7 @@ int encode_tree(Node *tree, char *buffer, int *index);
  * @param index Pointer to an integer pointing to the next character in the buffer (recursion)
  * @return Pointer to root of the binary tree (decompressed)
  */
-Node *decode_tree(const char *compressed, int *index);
+Node *decode_tree(const char *compressed, uint32_t *index);
 
 /**
  * @brief Turns an array of ascii characters into an savable Huffman coding

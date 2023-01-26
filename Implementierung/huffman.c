@@ -1,36 +1,37 @@
 #include "huffman.h"
 
-int encode_tree(Node *tree, char *buffer, int *index) {
+uint32_t encode_tree(Node *tree, char *buffer, uint32_t *index) {
     if (tree->right == NULL && tree->left == NULL) { // node with valid character was reached
         char character = tree->character;
         buffer[(*index)++] = '1'; // '1' meaning an 8 bit character will follow
-        printf("1 ");
-        printf("%c (", character);
-        for (int i = 9; i > 1; i--) {
+        print("1 ");
+        print("%c (", character);
+        for (uint8_t i = 9; i > 1; i--) {
             char c = (character & 0x80) >> 7 ? '1' : '0'; // bithack to get the first bit of the character
             buffer[(*index)++] = c; // write character bit for bit into the buffer
             character <<= 1;
-            putchar(c);
+            put_chr(c);
         }
-        printf(") ");
+        print(") ");
         return 0; // irrelevant
     }
     buffer[(*index)++] = '0';
-    printf("0 ");
+    print("0 ");
     encode_tree(tree->left, buffer, index); // adding a '0' everytime it moves further down and do recursion
     encode_tree(tree->right, buffer, index);
     return *index; // return length of the buffer
 }
 
-Node *decode_tree(const char *compressed, int *index) {
+Node *decode_tree(const char *compressed, uint32_t *index) {
     Node *cur_node = create_node('\0', 0, NULL, NULL); // Create the upper node (always \0)
-    cur_node->left = NULL;
-    cur_node->right = NULL;
+
+    if (!cur_node)
+        return NULL;
 
     if (compressed[*index] != '\n') { // iterate through the buffer
         if (compressed[*index] == 49) { // ascii for '1' (8 bit character follows)
             char character = '\0';
-            for (int i = 1; i < 9; i++) {
+            for (uint8_t i = 1; i < 9; i++) {
                 character <<= 1; // shifting character and adding 1 if bit was set -> character is loaded from binary ascii code
                 if (compressed[(*index) + i] - 49 == 0) {
                     character++;
@@ -49,140 +50,162 @@ Node *decode_tree(const char *compressed, int *index) {
 }
 
 char *huffman_encode(size_t len, const char data[len]) {
-    Node* table[HEAP_SIZE] = {0}; // create table (same as unicode table (8 bits))
+    Node *table[HEAP_SIZE] = {0}; // create table (same as extended unicode table (8 bits))
 
-    for (size_t i = 0; i < len; i++) {
-        if (table[(uint8_t) data[i]] == NULL) {
-            table[(uint8_t) data[i]] = create_node(data[i], 1, NULL, NULL);
+    // COUNT OCCURRENCES OF LETTERS
+
+    for (size_t i = 0; i < len; i++) { // Go through input string
+        if (table[(uint8_t) data[i]] == NULL) { // If not already in table -> create node
+            Node *first_node = create_node(data[i], 1, NULL, NULL);
+            if (!first_node)
+                return NULL;
+
+            table[(uint8_t) data[i]] = first_node;
         } else {
-            table[(uint8_t) data[i]]->frequency += 1; // increment for every letter (counting appearance)
+            table[(uint8_t) data[i]]->frequency += 1; // increment for every following letter (counting appearance)
         }
     }
 
-    Heap *heap = create_heap(HEAP_SIZE); //Min Heap
+    // FILL HEAP
 
-    // print (for debugging)
-    printf("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
+    Heap *heap = create_heap(HEAP_SIZE); // Create Min Heap
+
+    if (!heap)
+        return NULL;
+
+    print("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
     for (uint16_t i = 0; i < 256; i++) {
-
         if (table[i] == 0x0) // if pointer is null
             continue;
 
         uint16_t frequency = table[i]->frequency;
-        if (frequency != 0) {
-            printf("Der '%c' kommt %s%d%s mal vor!\n", i, RED, frequency, WHITE);
+        if (frequency > 0) { // If frequency is > 0 add node to heap structure
+            print("Der '%c' kommt %s%d%s mal vor!\n", i, RED, frequency, WHITE);
             insert(heap, table[i]);
         }
     }
-    printf("\n");
+    print("\n");
 
-    while(heap->count > 1) { // kombiniere außer es gibt keine 2 nodes
-        Node *min1 = pop_min(heap);
+    while (heap->count > 1) { // Combine two smallest nodes (till only one left)
+        // Pop the two smallest nodes
+        Node *min1 = pop_min(heap); // No null check -> count already checks condition
         Node *min2 = pop_min(heap);
 
+        // Connect them with connecting node ('\0') and add frequencies together (min1 is left and min2 right tree branch)
         Node *connector = create_node('\0', min1->frequency + min2->frequency, min1, min2);
 
-        insert(heap, connector);
+        if (!connector)
+            return NULL;
+
+        insert(heap, connector); // Insert connector node into heap
     }
 
-    Node *root = pop_min(heap);
+    Node *root = pop_min(heap); // Pop node which acts as the root
 
-    // print (for debugging)
-    printf("%sTree creation%s\n", CYAN, WHITE);
+    print("%sTree creation%s\n", CYAN, WHITE);
     print_tree_inorder(root);
-    printf("\n\n");
+    print("\n\n");
 
-    // Huffman Array with comrpessedtree + \n + huffmancode
-    char *huffman = malloc(BUF_LENGTH * sizeof(char)); // malloc check
+    // Huffman Array with ==> compressed_tree + '\n' + huffman_code
+    char *huffman = malloc(BUF_LENGTH * sizeof(char));
 
-    // Compress tree
-    int index[1] = {0};
-    printf("%sCompressed tree%s\n", CYAN, WHITE); // print (for debugging)
-    int huffman_index = encode_tree(root, huffman, index);
+    if (!huffman) { // malloc check
+        perror("Memory Error: Allocating memory for huffman buffer did not work as expected.\n");
+        return NULL;
+    }
 
-    huffman[huffman_index++] = '\n';
+    // COMPRESS TREE ROOT
 
-    // turn tree to dictionary
-    uint8_t length_table[128] = {0}; // savable in 3 bits -> max. length of 8
-    int lookup_table[128] = {0};
+    print("%sCompressed tree%s\n", CYAN, WHITE);
+    uint32_t index[1] = {0};
+    uint32_t huffman_index = encode_tree(root, huffman, index);
+
+    huffman[huffman_index++] = '\n'; // Add '\n'
+
+    // TREE TO DICTIONARY
+
+    // One array for the huffman code (lookup), one for the length of the code because binary saved (length)
+    uint8_t length_table[256] = {0}; // savable in 3 bits -> max. huffman code length of ?
+    uint32_t lookup_table[256] = {0};
 
     tree_to_dic(root, length_table, lookup_table, 0, 0);
 
-    // print (for debugging)
-    printf("\n\n%sDictionary%s\n", CYAN, WHITE);
-    for (uint8_t i = 0; i < 128; i++) {
+    print("\n\n%sDictionary%s\n", CYAN, WHITE);
+    for (uint16_t i = 0; i < 256; i++) { // For every ascii character
         if (length_table[i] != 0) {
-            printf("'%c' -> ", i);
+            print("'%c' -> ", i);
             print_binary(lookup_table[i], length_table[i]);
-            printf(" (Länge: %d)", length_table[i]);
-            printf("\n");
+            print(" (Länge: %d)", length_table[i]);
+            print("\n");
         }
     }
-    printf("\n");
+    print("\n");
 
-    // code (and length of it) of every letter
     for (size_t i = 0; i < len; i++) {
-        int code = lookup_table[(uint16_t) data[i]];
-        uint8_t length = length_table[(uint8_t) data[i]];
-        int mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
+        uint32_t code = lookup_table[(uint16_t) data[i]]; // Get huffman code as int
+        uint8_t length = length_table[(uint8_t) data[i]]; // Get length of huffman code
+        uint32_t mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
 
-        for (int i = 0; mask; i++) {
+        for (uint32_t i = 0; mask; i++) {
             huffman[huffman_index++] = ((code & mask) >> (length - 1 - i)) ? '1' : '0'; // translate character to binary
             mask >>= 1;
         }
     }
 
+    free(root);
     return huffman; // return tree + '\n' + huffman code
 }
 
 char *huffman_decode(size_t len, const char data[len]) {
     char *buf = malloc(BUF_LENGTH); // save enough space for up to BUF_LENGTH characters
-    int index = 0;
-    size_t seperator = 0;
+    uint32_t index = 0;
+    size_t separator = 0;
 
-    if (!buf) {
-        perror("Memory Error: Buffer could not be allocated");
+    if (!buf) { // malloc check
+        perror("Memory Error: Buffer (for decode) did not work as expected");
         return NULL;
     }
 
-    //find seperator in data of tree and decoding string
+    // find separator in data of tree and decoding string
     for (size_t i = 0; i < len; i++) {
         if (data[i] == '\n') {
-            seperator = i;
+            separator = i;
             break;
         }
     }
 
-    //nothing to decode or no new line in data
-    if (seperator == 0) {
+    if (separator == 0) { // nothing to decode or no new line in data
         return buf;
     }
 
-    //build tree from data
-    int cur[1] = {0};
+    // build tree from data
+    uint32_t cur[1] = {0};
     Node *tree_root = decode_tree(&data[0], cur);
 
-    // print (for debugging)
-    printf("%sRebuilding tree%s\n", CYAN, WHITE);
+    if (!tree_root)
+        return NULL;
+
+    print("%sRebuilding tree%s\n", CYAN, WHITE);
     print_tree_inorder(tree_root);
-    printf("\n\n");
+    print("\n\n");
 
     Node *pointer = tree_root;
-    for (size_t i = seperator + 1; i < len; i++) {
+    for (size_t i = separator + 1; i < len; i++) {
         if (data[i] == '0') {
             pointer = pointer->left;
-            if (pointer->left == NULL && pointer->right == NULL) {
-                buf[index++] = pointer->character;
+            if (pointer->left == NULL && pointer->right == NULL) { // if node is a leaf/character
+                buf[index++] = pointer->character; // add character to the buffer and reset pointer to root
                 pointer = tree_root;
             }
         } else if (data[i] == '1') {
             pointer = pointer->right;
-            if (pointer->left == NULL && pointer->right == NULL) {
+            if (pointer->left == NULL && pointer->right == NULL) { // same as above
                 buf[index++] = pointer->character;
                 pointer = tree_root;
             }
         }
     }
 
-    return buf;
+    free(tree_root);
+    return buf; // Return decodede huffman code as string
 }
