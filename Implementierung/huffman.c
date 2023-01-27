@@ -61,7 +61,7 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     Heap *heap = create_heap(HEAP_SIZE); //Min Heap
 
-    // print (for debugging)
+     //print (for debugging)
     printf("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
     for (uint16_t i = 0; i < 256; i++) {
 
@@ -186,3 +186,4 @@ char *huffman_decode(size_t len, const char data[len]) {
 
     return buf;
 }
+
