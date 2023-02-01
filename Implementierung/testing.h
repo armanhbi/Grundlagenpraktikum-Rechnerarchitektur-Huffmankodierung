@@ -3,6 +3,7 @@
 
 #include "huffman.h"
 
-int testing(char* testString);
+int test_case(const char *testString);
+void test_all();
 
-#endif //TESTING_H
+#endif
