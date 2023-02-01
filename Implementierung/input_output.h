@@ -1,12 +1,7 @@
 #ifndef INPUT_OUTPUT_H
 #define INPUT_OUTPUT_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "huffman.h"
-#include "helper.h"
+#include "printer.h"
 
 /**
  * @brief Reads the data from path into buf
@@ -17,8 +12,8 @@ char *read_data(char *path);
 
 /**
  * @brief Saves the string in result into path
- * @param path where the result should be saved
- * @param result either Huffman encoding or normal ascii string
+ * @param path Where the result should be saved
+ * @param result Either Huffman encoding or normal ascii string
  */
 void write_data(char *path, char *result);
 
