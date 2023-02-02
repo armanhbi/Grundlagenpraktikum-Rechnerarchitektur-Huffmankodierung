@@ -18,21 +18,46 @@
 
 \section{Einleitung}
 
-Die von David A. Huffman, im jahr 1952, entwickelte Huffmankodierung dient zur verlustfreien Datenkompression.
-Um Redundanz zu minimieren, werden, nach einer Häufigkeitsanalyse der Symbole, diese in einem Binärbaum angeordnet, sodass der entstehende Binärkode, mit welchem das Symbol im Baum zu erreichen ist, präfixfrei ist.
-Dies bedeutet, dass kein Binärkode Teil eines anderen sein darf und ermöglicht es die Daten ohne Trennzeichen zu speichern. Die Symbole, die häufiger in der Quelldatei auftauchen, befinden sich weiter oben im Baum und brauchen daher auch weniger Bits zum abspeichern. 
-Das Verfahren ist soweit Optimal, da es keinen anderen symbolbasierten Weg gibt, der einen kürzeren Code erzeugen könnte, insofern die Häufigkeiten der Symbole bekannt sind. \cite{4051119}
-Im folgenden gilt es diesen Algorithmus in der Programmiersprache C zu implementieren und ein Rahmenprogramm zu erstellen, welches es ermöglicht Dateien zu komprimieren und zu dekodieren.
+Die von David A. Huffman im Jahr 1952 entwickelte Huffmankodierung dient zu einer einfachen und verlustfreien Datenkompression.
+Der Algorithmus nutzt dabei die Tatsache aus, dass Symbole in einem Text unterschiedlich oft auftauchen. Zeichen, die öfters vorkommen, werden mit weniger Zeichen codiert als Zeichen, die selten auftauchen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
+
+Dabei wird nach einer Häufigkeitsanalyse der vorkommenden Symbole im Text diese in einem Huffmanbaum angeordnet, welche jedem Zeichen ihre entsprechende Bitsequenz zuordnet. Die Symbole, die häufiger in der Quelldatei auftauchen, befinden sich weiter oben im Baum und brauchen daher auch weniger Bits zum abspeichern. Die Besonderheit des Huffmanbaums liegt darin, dass dieser präfix-freie Sequenzen schafft.
+Dies bedeutet, dass jede Bitfolge einzigartig ist und keine Bitfolge mit dem Anfang einer anderen übereinstimmt. Sobald ein Zeichen zugeordnet worden ist, beginnt direkt die Bitfolge des nächsten Zeichen. Das ermöglicht es, die Daten ohne Trennzeichen zu speichern, sodass Redundanz minimiert wird.
+
+Als Beispiel wird der String $ABRACADABRAB$ komprimiert, welcher die folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
+
+\begin{center}
+    \begin{tabular}{ |c|c|c|c|c| }
+     \hline
+     A & B & C & D & R \\
+     \hline
+     5 & 3 & 1 & 1 & 2 \\
+     \hline
+    \end{tabular}
+\end{center}
+
+Daraufhin wird der präfix-freie Baum
+%(Bild Baum? mit Bitsequenz igwo keine 8 Bits pro zeichen (spezifizieren ob extended ascii oder normal) -> bites sparen, baum muss auch gespeichert werden, dennoch optimiert)
+Zum Schluss wird der Text buchstabenweise kodiert und abegespeichert. Zusätzlich muss auch der Baum abgespeichert werden, dennoch dient die Huffmankodierung bei vorallem längeren Texten optimierter.
+Das Verfahren ist soweit optimal, da es keinen anderen symbolbasierten Weg gibt, der einen kürzeren Code erzeugen könnte, insofern die Häufigkeiten der Symbole bekannt sind. \cite{4051119}
+
+Im Folgenden wird eine Implementierung der Huffmankodierung in der Programmiersprache C vorgestellt, welches es ermöglicht, Dateien zu komprimieren und zu dekodieren. Daraufhin wurde die Korrektheit dieser Implementierung mit Hilfe einer Vergleichsimplementierung bestimmt. Zum Schluss wurde die Performanz durch Zeitmessungen analysiert, indem der Algorithmus mit einer nicht optimierten Version und einer Vergleichsimplementierung verglichen wurde.
 
 \section{Lösungsansatz}
 
+Probleme: evtl entarteter Baum ->nicht schlimm wegen Buffer 65000 rechnung -> max 265 char mal 8 -> 2048 passt schon ungefähr
+
 
 % TODO: Je nach Aufgabenstellung einen der Begriffe wählen
-\section{Korrektheit/Genauigkeit}
+\section{Korrektheit}
 
+Im Folgenden wird die Korrektheit im Gegensatz zur Genauigkeit analysiert, weil zu jeder Eingabe von Daten nach dem Verschlüsseln beziehungsweise Entschlüsseln genau eine spezifische Ausgabe zugeordnet wird.
 
 \section{Performanzanalyse}
 
+Die folgende Laufzeitanalyse wurde mit einem System mit einem AMD Ryzen 7 5700U Prozessor, 1.80 bis 4.30GHz, 16 GB Arbeitsspeicher, Ubuntu 22.04, 64 Bit, Linux Kernel 5.15.0-41-generic. Kompiliert wurde das Programm mit GCC ??? mit der Option -O3.
+
+Um die Geschwindigkeit der finalen Implementierung zu analysieren, wurde diese mit einer nicht optimierten Version und einer Vergleichimplementierung verglichen.
 
 \section{Zusammenfassung und Ausblick}
 
