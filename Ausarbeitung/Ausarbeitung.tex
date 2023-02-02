@@ -26,6 +26,28 @@ Im folgenden gilt es diesen Algorithmus in der Programmiersprache C zu implement
 
 \section{Lösungsansatz}
 
+\subsection{Encode}
+
+Zuerst wird die Häufigkeitsanalyse der Symbole durchgeführt. Dafür wird ein Array mit Pointern auf Nodes für jedes ASCII Zeichen angelegt, welche die Frequenz des Zeichens speichern, sowie das Zeichen für die spätere Verwendung. Das Zählen erfolgt hierbei mit einer Effizienz von $\mathcal{O}(1)$, da der Array-Index dem ASCII-Code entspricht.
+Zusätzlich wird Speicher gespart, indem die Nodes erst erstellt werden sobald das zugehörige ASCII Zeichen das erste mal gelesen wird.
+
+Als Beispiel wird der String $ABRACADABRAB$ komprimiert, welcher die Folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
+
+\begin{center}
+    \begin{tabular}{ |c|c|c|c|c| } 
+     \hline
+     A & B & C & D & R \\ 
+     \hline
+     5 & 3 & 1 & 1 & 2 \\ 
+     \hline
+    \end{tabular}
+\end{center}
+
+Anschließend wird ein Min-Heap erstellt und die erstellten Nodes darin eingefügt. Hier fängt der von Huffman entwickelte Algorithmus an. \cite{10.1145/3342555}
+Solange mehr als ein Node im Min-Heap ist, werden die beiden Nodes mit der geringsten Frequenz aus dem Min-Heap entfernt und an einem neuen Node angehängt (mit einem Null Zeichen), welcher die Summe der beiden Frequenzen als Wert erhält. Dieser wird wieder in den Min-Heap eingefügt.
+Am Ende bleibt nur noch ein Node im Min-Heap übrig, welcher den fertigen Huffman-Baum enthält.
+
+\subsection{Decode}
 
 % TODO: Je nach Aufgabenstellung einen der Begriffe wählen
 \section{Korrektheit/Genauigkeit}
