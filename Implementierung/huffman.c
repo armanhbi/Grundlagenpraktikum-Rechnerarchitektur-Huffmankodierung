@@ -44,7 +44,6 @@ Node *decode_tree(const char *compressed, uint32_t *index) {
         ++(*index);
         cur_node->left = decode_tree(compressed, index); // recursion for left first than right side
         cur_node->right = decode_tree(compressed, index);
-        print_tree_inorder(cur_node);
     }
     return cur_node; // return upper root node/tree
 }
@@ -243,4 +242,3 @@ char *huffman_decode(size_t len, const char data[len]) {
     free(tree_root);
     return buf; // Return decodede huffman code as string
 }
-

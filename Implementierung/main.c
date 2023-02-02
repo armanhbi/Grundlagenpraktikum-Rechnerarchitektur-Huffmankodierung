@@ -20,9 +20,9 @@ int main(int argc, char **argv) {
     int impl_num = 0;
     bool measure = false; // Measure performance
     int measure_rounds = 0; // How often?
-    char *input_file; // Path
+    char *input_file = NULL; // Path
     bool decrypt = false;
-    char *output_file;
+    char *output_file = NULL;
 
     // --help for -h
     static struct option help_synonym[] = {
@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
     print("'%s%s%s'\n", RED, result, WHITE);
 
     // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (((uint64_t) output_file) && strlen(output_file) && strlen(result)) {
+    if (output_file && strlen(output_file) && strlen(result)) {
         if (!write_data(output_file, result)) {
             free(result);
             free(data);
