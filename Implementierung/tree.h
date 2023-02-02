@@ -1,6 +1,8 @@
 #ifndef TREE_H
 #define TREE_H
 
+#include <stdint.h>
+
 #include "printer.h"
 
 // Struct for one node with appropriate attributes

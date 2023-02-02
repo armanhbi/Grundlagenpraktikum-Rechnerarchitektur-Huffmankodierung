@@ -2,6 +2,7 @@
 #define INPUT_OUTPUT_H
 
 #include <sys/stat.h>
+#include <stdint.h>
 
 #include "printer.h"
 

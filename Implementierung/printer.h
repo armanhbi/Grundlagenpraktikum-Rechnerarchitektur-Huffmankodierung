@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 #define BUF_LENGTH 262144 // 2^18
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
