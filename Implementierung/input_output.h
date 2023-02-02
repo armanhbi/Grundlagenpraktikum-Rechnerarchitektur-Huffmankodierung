@@ -1,6 +1,8 @@
 #ifndef INPUT_OUTPUT_H
 #define INPUT_OUTPUT_H
 
+#include <sys/stat.h>
+
 #include "printer.h"
 
 /**
@@ -14,7 +16,8 @@ char *read_data(char *path);
  * @brief Saves the string in result into path
  * @param path Where the result should be saved
  * @param result Either Huffman encoding or normal ascii string
+ * @result Returns if data was written successful
  */
-void write_data(char *path, char *result);
+int write_data(char *path, char *result);
 
 #endif

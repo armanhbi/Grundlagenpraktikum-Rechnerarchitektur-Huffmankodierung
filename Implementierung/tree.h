@@ -37,4 +37,10 @@ void tree_to_dic(Node *root, uint8_t *length_table, uint32_t *lookup_table, uint
  */
 void print_tree_inorder(Node *root);
 
+/**
+ * @brief Frees the tree (Post Order)
+ * @param root Pointer to the root node
+ */
+void free_node(Node *root);
+
 #endif

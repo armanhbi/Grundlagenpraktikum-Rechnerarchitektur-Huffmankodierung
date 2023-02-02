@@ -3,6 +3,7 @@
 Node *create_node(char character, uint16_t frequency, Node *left, Node *right) {
     Node *created_node = malloc(sizeof(Node)); // save enough memory for a new node
     if (!created_node) { // check malloc
+        perror("TreeException: Memory for a node could not be allocated");
         return NULL;
     }
     created_node->character = character; // setting all attributes accordingly
@@ -36,4 +37,14 @@ void tree_to_dic(Node *root, uint8_t *length_table, uint32_t *lookup_table, uint
 
     // shifting path (adding 0) and incrementing it (with logical OR operation -> turning it to a 1)
     tree_to_dic(root->right, length_table, lookup_table, path << 1 | 1, length + 1); // incrementing length
+}
+
+void free_node(Node *root) {
+    if (!root) { // recursion termination condition and general null check
+        return;
+    }
+    free_node(root->left); // iterate through left side
+    free_node(root->right); // iterate through right side
+    if (root) // If root exists, free it
+        free(root);
 }

@@ -1,18 +1,30 @@
 #include "input_output.h"
 
+int is_dir(const char *path) {
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0)
+        return 0;
+    return S_ISDIR(statbuf.st_mode);
+}
+
 char *read_data(char *path) {
     FILE *fd = NULL;
     char *buf = malloc(BUF_LENGTH * sizeof(char)); // save enough space for up to 1024 characters
 
     if (!buf) { // if malloc did not work
-        perror("Memory Error: Allocating memory for buffer to read file did not work as expected.\n");
+        perror("Buffer for reading a file could not be allocated");
+        return NULL;
+    }
+
+    if (is_dir(path)) {
+        perror("The path is a directory");
         return NULL;
     }
 
     fd = fopen(path, "r"); // open file with path and in reading mode
 
     if (!fd) { // if opening the file did not work
-        perror("File Error: Opening file did not work as expected (Does the file exist?).\n");
+        perror("Opening a file did not work as expected");
         return NULL;
     }
 
@@ -29,22 +41,28 @@ char *read_data(char *path) {
     return buf;
 }
 
-void write_data(char *path, char *result) {
+int write_data(char *path, char *result) {
     print("\n");
+
+    if (is_dir(path)) {
+        perror("The path is a directory");
+        return 1;
+    }
 
     FILE *fd;
     fd = fopen(path, "w"); // open file with path as file descriptor
     if (!fd) { // fopen check
-        perror("File Error: Opening file did not work as expected (Does the file exist?).\n");
-        return;
+        perror("File does not exist");
+        return 1;
     }
 
     print("%sResult was saved in '%s'%s\n", GREEN, path, WHITE); // print (for debugging)
 
     if (fputs(result, fd) == EOF) { // if error occurred in writing data (EOF is returned)
-        perror("File Error: Saving string in file did not work as expected.\n");
-        return;
+        perror("Writing string in file did not work as expected");
+        return 1;
     }
 
     fclose(fd); // close file descriptor
+    return 0;
 }

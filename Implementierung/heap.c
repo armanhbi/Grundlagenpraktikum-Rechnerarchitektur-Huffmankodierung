@@ -4,7 +4,7 @@ Heap *create_heap(int capacity) {
     Heap *heap = (Heap *) malloc(sizeof(Heap)); // Allocating memory for the heap
 
     if (!heap) { // check malloc of heap
-        perror("Memory Error: Allocating memory for the heap did not work as expected.\n");
+        perror("HeapException: Memory for the heap could not be allocated");
         return NULL;
     }
 
@@ -13,7 +13,7 @@ Heap *create_heap(int capacity) {
     heap->arr = malloc(capacity * sizeof(Node *)); // Allocate memory for every pointer (~64 bit * 256 = 1-2kb)
 
     if (!heap->arr) { // check malloc of array
-        perror("Memory Error: Allocating memory for the heap's array did not work as expected.\n");
+        perror("HeapException: Memory for the array in a heap could not be allocated");
         return NULL;
     }
 
@@ -75,7 +75,7 @@ Node *pop_min(Heap *heap) {
     Node *to_pop;
 
     if (heap->count == 0) { // Empty heap
-        perror("Heap Error: Heap is empty.\n");
+        perror("HeapException: Heap is empty");
         return NULL;
     }
 
@@ -88,10 +88,20 @@ Node *pop_min(Heap *heap) {
     return to_pop;
 }
 
-void print_heap(Heap *h) {
+void print_heap(Heap *heap) {
     print("Printing Heap\n");
-    for (int i = 0; i < h->count; i++) { // Go through heap
-        print("-> ('%c' mit '%d')", h->arr[i]->character, h->arr[i]->frequency);
+    for (int i = 0; i < heap->count; i++) { // Go through heap
+        print("-> ('%c' mit '%d')", heap->arr[i]->character, heap->arr[i]->frequency);
     }
     print("-> /\n");
+}
+
+void free_heap(Heap *heap) {
+    for (int i = 0; i < heap->count; i++) { // Go through heap
+        if (heap->arr[i]) { // if array element exists
+            free(heap->arr[i]); // free array
+        }
+    }
+    if (heap) // if heap structure exists, free it
+        free(heap);
 }

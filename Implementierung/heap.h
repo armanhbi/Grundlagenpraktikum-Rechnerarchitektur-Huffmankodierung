@@ -63,4 +63,10 @@ void heapify_top_bottom(Heap *heap, int parent_node);
  */
 void print_heap(Heap *heap);
 
+/**
+ * @brief Free heap structure
+ * @param heap Pointer to heap to insert into
+ */
+void free_heap(Heap *heap);
+
 #endif

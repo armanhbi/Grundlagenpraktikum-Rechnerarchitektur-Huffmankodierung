@@ -7,7 +7,7 @@
 
 #include "huffman.h"
 #include "input_output.h"
-#include "helper.h"
+#include "printer.h"
 #include "testing.h"
 
 int main(int argc, char **argv) {
@@ -33,7 +33,11 @@ int main(int argc, char **argv) {
     while ((opt = getopt_long(argc, argv, "V:B:o:dh", help_synonym, NULL)) != -1) {
         switch (opt) {
             case 'V':
-                impl_num = atoi(optarg); // Interpret the argument as number (atoi)
+                if (optarg == NULL) {
+                    PRINT_HELP_MSG
+                    return EXIT_FAILURE;
+                }
+                impl_num = atoi(optarg); // Interpret the argument as number (atoi) -> on error returns 0
                 break;
             case 'B':
                 measure = true; // if measurement flag is set
@@ -44,6 +48,10 @@ int main(int argc, char **argv) {
                 measure_rounds = atoi(optarg); // How often should performance be measured
                 break;
             case 'o':
+                if (optarg == NULL) {
+                    PRINT_HELP_MSG
+                    return EXIT_FAILURE;
+                }
                 output_file = optarg;
                 break;
             case 'd':
@@ -57,13 +65,13 @@ int main(int argc, char **argv) {
     }
 
     if (optind >= argc) { // If there is no input file (necessary!)
-        perror("Positional argument 'file' not found\n");
+        perror("Positional argument 'file' not found");
         PRINT_HELP_MSG
         return EXIT_FAILURE;
     }
 
-    test_all();
-    return 0;
+//    test_all();
+//    return 0;
 
     input_file = argv[optind];
 
@@ -71,35 +79,53 @@ int main(int argc, char **argv) {
 
     char *data;
     data = read_data(input_file); // Read string out of input file
-    size_t data_length = strlen(data); // Measure length
+
+    if (data == NULL) {
+        PRINT_HELP_MSG
+        return EXIT_FAILURE;
+    }
+
+    size_t data_length = data != NULL ? strlen(data) : 0; // Measure length
+
+    if (data_length == 0) {
+        perror("String is empty");
+        PRINT_HELP_MSG
+        return EXIT_FAILURE;
+    }
 
     // Print basic details and information about flags
     print("\n%sBasic Information%s", CYAN, WHITE);
     print("\nInput File: %s", input_file);
     print("\nVersion: %d", impl_num);
-    print("\nTesting: %s (with %d rounds)", measure ? "true" : "false", measure_rounds);
+    print("\nMeasurement: %s (with %d rounds)", measure ? "true" : "false", measure_rounds);
     print("\nDecrypt: %s", decrypt ? "true" : "false");
     print("\nOutput File: %s\n", output_file);
 
     print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, data_length, WHITE);
 
+    char *result;
     if (decrypt) {
-        data = huffman_decode(data_length, data);
+        result = huffman_decode(data_length, data);
     } else {
-        data = huffman_encode(data_length, data);
+        result = huffman_encode(data_length, data);
     }
 
-    if (!data)
+    if (!result)
         return EXIT_FAILURE;
 
     print("%sRETURN VALUE%s\n", CYAN, WHITE);
-    print("'%s%s%s'\n", RED, data, WHITE);
+    print("'%s%s%s'\n", RED, result, WHITE);
 
     // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (strlen(output_file) && strlen(data)) {
-        write_data(output_file, data);
+    if (output_file != NULL && strlen(output_file) && strlen(result)) {
+        if (!write_data(output_file, result)) {
+            free(result);
+            free(data);
+            return EXIT_FAILURE;
+        }
     }
 
+    free(result);
     free(data);
     return EXIT_SUCCESS;
 }
