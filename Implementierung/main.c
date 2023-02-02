@@ -116,8 +116,18 @@ int main(int argc, char **argv) {
     print("%sRETURN VALUE%s\n", CYAN, WHITE);
     print("'%s%s%s'\n", RED, result, WHITE);
 
+    printf("klappt1\n");
+    printf("%s\n", output_file);
+    printf("klappt2\n");
+    printf("%d\n", output_file == NULL);
+    printf("klappt3\n");
+    printf("%d\n", strlen(output_file));
+    printf("klappt4\n");
+    printf("%d\n", strlen(result));
+    printf("klappt5\n");
+
     // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (output_file != NULL && strlen(output_file) && strlen(result)) {
+    if (output_file && strlen(output_file) && strlen(result)) {
         if (!write_data(output_file, result)) {
             free(result);
             free(data);

@@ -8,7 +8,7 @@
 
 #define BUF_LENGTH 262144 // 2^18
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
-#define DEBUG_PRINT 0
+#define DEBUG_PRINT 1
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
 #define PRINT_HELP_MSG fprintf(stderr, "\nusage: huffman <input_file> [-V version_num] [-B n] [-d] [-o output_file] [-h]\n\n"\
