@@ -10,7 +10,7 @@
  * @param path Path to the file
  * @return Returns the string saved in the file (Huffman encoding or normal ascii characters)
  */
-char *read_data(char *path);
+char *read_data(const char *path);
 
 /**
  * @brief Saves the string in result into path
@@ -18,6 +18,6 @@ char *read_data(char *path);
  * @param result Either Huffman encoding or normal ascii string
  * @result Returns if data was written successful
  */
-int write_data(char *path, char *result);
+int write_data(const char *path, char *result);
 
 #endif

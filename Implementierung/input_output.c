@@ -7,7 +7,7 @@ int is_dir(const char *path) {
     return S_ISDIR(statbuf.st_mode);
 }
 
-char *read_data(char *path) {
+char *read_data(const char *path) {
     FILE *fd = NULL;
     char *buf = malloc(BUF_LENGTH * sizeof(char)); // save enough space for up to 1024 characters
 
@@ -41,7 +41,7 @@ char *read_data(char *path) {
     return buf;
 }
 
-int write_data(char *path, char *result) {
+int write_data(const char *path, char *result) {
     print("\n");
 
     if (is_dir(path)) {

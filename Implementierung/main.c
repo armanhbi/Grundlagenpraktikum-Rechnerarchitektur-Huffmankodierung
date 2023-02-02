@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-//    test_all();
-//    return 0;
+    test_all();
+    return 0;
 
     input_file = argv[optind];
 
