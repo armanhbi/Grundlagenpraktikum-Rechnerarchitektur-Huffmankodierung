@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
     print("'%s%s%s'\n", RED, result, WHITE);
 
     // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (((int) output_file) && strlen(output_file) && strlen(result)) {
+    if (((uint64_t) output_file) && strlen(output_file) && strlen(result)) {
         if (!write_data(output_file, result)) {
             free(result);
             free(data);
