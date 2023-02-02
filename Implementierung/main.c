@@ -117,11 +117,14 @@ int main(int argc, char **argv) {
     print("'%s%s%s'\n", RED, result, WHITE);
 
     // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (output_file && strlen(output_file) && strlen(result)) {
-        if (!write_data(output_file, result)) {
-            free(result);
-            free(data);
-            return EXIT_FAILURE;
+    if (output_file != NULL) {
+        printf("test\n");
+        if (strlen(output_file) && strlen(result)) {
+            if (!write_data(output_file, result)) {
+                free(result);
+                free(data);
+                return EXIT_FAILURE;
+            }
         }
     }
 
