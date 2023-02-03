@@ -171,12 +171,12 @@ char *huffman_encode(size_t len, const char data[len]) {
         uint32_t mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
 
         for (uint32_t i = 0; mask; i++) {
-//            // If the Huffman Code is too long -> Error => Not really necessary because of check in read_data
-//            if (huffman_index > BUF_LENGTH) {
-//                perror("Der Huffman Code ist zu lang");
-//                free(huffman);
-//                return NULL;
-//            }
+            // If the Huffman Code is too long -> Error => Not really necessary because of check in read_data
+            if (huffman_index > BUF_LENGTH) {
+                perror("Der Huffman Code würde zu lang werden als Memory reserviert ist");
+                free(huffman);
+                return NULL;
+            }
             huffman[huffman_index++] = ((code & mask) >> (length - 1 - i)) ? '1' : '0'; // translate character to binary
             mask >>= 1;
         }
