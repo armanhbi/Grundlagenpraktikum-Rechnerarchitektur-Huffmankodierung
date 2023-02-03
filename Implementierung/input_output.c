@@ -36,6 +36,7 @@ char *read_data(const char *path) {
             break;
         buf[i++] = c; // add it to the buffer
     }
+    buf[i++] = '\0';
 
     fclose(fd); // close file descriptor
     return buf;

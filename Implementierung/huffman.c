@@ -54,12 +54,11 @@ char *huffman_encode(size_t len, const char data[len]) {
         return NULL;
     }
 
-    uint16_t table[HEAP_SIZE] = {0};
-    //Node *table[HEAP_SIZE] = {0}; // create table (same as extended unicode table (8 bits))
+    uint16_t table[HEAP_SIZE] = {0}; // create table (same as extended unicode table (8 bits))
 
     // COUNT OCCURRENCES OF LETTERS
 
-    for (size_t i = 0; i < len; i++) { // Go through input string
+    for (size_t i = 0; i < len; i++) { // Go through input string O(n)
         table[(uint8_t) data[i]] += 1; // increment for every following letter (counting appearance)
     }
 
@@ -80,7 +79,7 @@ char *huffman_encode(size_t len, const char data[len]) {
 
         if (table[i] > 0) { // If frequency is > 0 add node to heap structure
             print("'%c' kommt %s%d%s mal vor!\n", i, RED, table[i], WHITE);
-            insert(heap, to_insert);
+            insert(heap, to_insert); // O(log n)
         }
     }
     print("\n");
@@ -96,7 +95,7 @@ char *huffman_encode(size_t len, const char data[len]) {
         insert(heap, connector); // Insert the connector back to the heap (it will get popped instantly)
     }
 
-    while (heap->count > 1) { // Combine two smallest nodes (till only one left)
+    while (heap->count > 1) { // Combine two smallest nodes (till only one left)  O(2n * log n) ?
         // Pop the two smallest nodes
         Node *min1 = pop_min(heap); // No null check -> count already checks condition
         Node *min2 = pop_min(heap);
@@ -107,7 +106,7 @@ char *huffman_encode(size_t len, const char data[len]) {
         if (!connector)
             return NULL;
 
-        insert(heap, connector); // Insert connector node into heap
+        insert(heap, connector); // Insert connector node into heap O (log n)
     }
 
     Node *root = pop_min(heap); // Pop node which acts as the root

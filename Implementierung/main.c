@@ -77,55 +77,60 @@ int main(int argc, char **argv) {
 
     // STARTING HUFFMAN EN-/DECODING
 
-    char *data;
-    data = read_data(input_file); // Read string out of input file
+    do {
+        char *data = NULL;
+        data = read_data(input_file); // Read string out of input file
 
-    if (data == NULL) {
-        PRINT_HELP_MSG
-        return EXIT_FAILURE;
-    }
-
-    size_t data_length = data != NULL ? strlen(data) : 0; // Measure length
-
-    if (data_length == 0) {
-        perror("String is empty");
-        PRINT_HELP_MSG
-        return EXIT_FAILURE;
-    }
-
-    // Print basic details and information about flags
-    print("\n%sBasic Information%s", CYAN, WHITE);
-    print("\nInput File: %s", input_file);
-    print("\nVersion: %d", impl_num);
-    print("\nMeasurement: %s (with %d rounds)", measure ? "true" : "false", measure_rounds);
-    print("\nDecrypt: %s", decrypt ? "true" : "false");
-    print("\nOutput File: %s\n", output_file);
-
-    print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, data_length, WHITE);
-
-    char *result;
-    if (decrypt) {
-        result = huffman_decode(data_length, data);
-    } else {
-        result = huffman_encode(data_length, data);
-    }
-
-    if (!result)
-        return EXIT_FAILURE;
-
-    print("%sRETURN VALUE%s\n", CYAN, WHITE);
-    print("'%s%s%s'\n", RED, result, WHITE);
-
-    // If output file was set / Data has value write data (HM code / decoded code) to output file
-    if (output_file && strlen(output_file) && strlen(result)) {
-        if (!write_data(output_file, result)) {
-            free(result);
-            free(data);
+        if (data == NULL) {
+            PRINT_HELP_MSG
             return EXIT_FAILURE;
         }
-    }
 
-    free(result);
-    free(data);
+        size_t data_length = (data != NULL) ? strlen(data) : 0; // Measure length
+
+        if (data_length == 0) {
+            perror("String is empty");
+            PRINT_HELP_MSG
+            return EXIT_FAILURE;
+        }
+
+        // Print basic details and information about flags
+        print("\n%sBasic Information%s", CYAN, WHITE);
+        print("\nInput File: %s", input_file);
+        print("\nVersion: %d", impl_num);
+        print("\nMeasurement: %s (with %d rounds)", measure ? "true" : "false", measure_rounds);
+        print("\nDecrypt: %s", decrypt ? "true" : "false");
+        print("\nOutput File: %s\n", output_file);
+
+        print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, data_length, WHITE);
+
+        char *result = NULL;
+        if (decrypt) {
+            result = huffman_decode(data_length, data);
+        } else {
+            result = huffman_encode(data_length, data);
+        }
+
+        if (!result)
+            return EXIT_FAILURE;
+
+        print("%sRETURN VALUE%s\n", CYAN, WHITE);
+        print("'%s%s%s'\n", RED, result, WHITE);
+
+        // If output file was set / Data has value write data (HM code / decoded code) to output file
+        if (output_file && strlen(output_file) && strlen(result)) {
+            if (!write_data(output_file, result)) {
+                free(result);
+                free(data);
+                return EXIT_FAILURE;
+            }
+        }
+
+        free(result);
+        free(data);
+
+        measure_rounds--;
+    } while (measure_rounds && measure_rounds >= 0);
+
     return EXIT_SUCCESS;
 }
