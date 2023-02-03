@@ -25,7 +25,7 @@
 #define GREEN "\033[32m"
 #define MAGENTA "\033[35m"
 
-unsigned int DEBUG_PRINT;
+extern unsigned int DEBUG_PRINT;
 
 /**
  * @brief Prints a character as binary (with set length)
