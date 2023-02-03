@@ -228,10 +228,10 @@ char *huffman_decode(size_t len, const char data[len]) {
         }
     }
 
-//    if (pointer != tree_root) {
-//        perror("The Huffman Encoding is wrong");
-//        return NULL;
-//    }
+    if (pointer != tree_root) {
+        perror("The Huffman Encoding is wrong");
+        return NULL;
+    }
 
     free(tree_root);
     return buf; // Return decodede huffman code as string

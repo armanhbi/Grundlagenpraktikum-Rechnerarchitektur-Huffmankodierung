@@ -7,7 +7,7 @@ int is_dir(const char *path) {
     return S_ISDIR(statbuf.st_mode);
 }
 
-char *read_data(const char *path) {
+char *read_data(const char *path, uint32_t *length) {
     FILE *fd = NULL;
     char *buf = malloc(BUF_LENGTH * sizeof(char)); // save enough space for up to BUF_LENGTH characters
 
@@ -36,6 +36,7 @@ char *read_data(const char *path) {
             break;
         buf[i++] = c; // add it to the buffer
     }
+    *length = i;
     buf[i++] = '\0';
 
     fclose(fd); // close file descriptor

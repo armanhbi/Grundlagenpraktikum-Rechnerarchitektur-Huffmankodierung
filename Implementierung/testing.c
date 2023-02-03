@@ -33,21 +33,21 @@ void test_case(const char *test_string) {
 
 void test_case_path(const char *test_path) {
     char *data;
-    data = read_data(test_path); // Read string out of input file
+    uint32_t *data_length = {0};
+    data = read_data(test_path, data_length); // Read string out of input file
 
     if (data == NULL) {
         printf("Test failed! File could not be loaded\n");
         return;
     }
 
-    size_t data_length = data != NULL ? strlen(data) : 0; // Measure length
 
-    if (data_length == 0) {
+    if (*data_length == 0) {
         printf("Test failed! Length of data is empty\n");
         return;
     }
 
-    char *encode = huffman_encode(data_length, data);
+    char *encode = huffman_encode(*data_length, data);
     if (!encode) {
         printf("Test failed! Encoded did not work correctly\n");
         return;

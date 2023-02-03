@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (optind >= argc) { // If there is no input file (necessary!)
+    if (optind >= argc) { // If there is no input file (necessary arg!)
         perror("Positional argument 'file' not found");
         PRINT_HELP_MSG
         return EXIT_FAILURE;
@@ -79,16 +79,15 @@ int main(int argc, char **argv) {
 
     do {
         char *data = NULL;
-        data = read_data(input_file); // Read string out of input file
+        uint32_t data_length[1] = {0}; // Measure length
+        data = read_data(input_file, data_length); // Read string out of input file
 
         if (data == NULL) {
             PRINT_HELP_MSG
             return EXIT_FAILURE;
         }
 
-        size_t data_length = (data != NULL) ? strlen(data) : 0; // Measure length
-
-        if (data_length == 0) {
+        if (*data_length == 0) {
             perror("String is empty");
             PRINT_HELP_MSG
             return EXIT_FAILURE;
@@ -102,24 +101,24 @@ int main(int argc, char **argv) {
         print("\nDecrypt: %s", decrypt ? "true" : "false");
         print("\nOutput File: %s\n", output_file);
 
-        print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, data_length, WHITE);
+        print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, *data_length, WHITE);
 
         char *result = NULL;
         if (decrypt) {
-            result = huffman_decode(data_length, data);
+            result = huffman_decode(*data_length, data);
         } else {
-            result = huffman_encode(data_length, data);
+            result = huffman_encode(*data_length, data);
         }
 
-        if (!result)
+        if (result == NULL)
             return EXIT_FAILURE;
 
         print("%sRETURN VALUE%s\n", CYAN, WHITE);
         print("'%s%s%s'\n", RED, result, WHITE);
 
         // If output file was set / Data has value write data (HM code / decoded code) to output file
-        if (output_file && strlen(output_file) && strlen(result)) {
-            if (!write_data(output_file, result)) {
+        if (output_file) {
+            if (write_data(output_file, result) != 0) {
                 free(result);
                 free(data);
                 return EXIT_FAILURE;
@@ -129,8 +128,8 @@ int main(int argc, char **argv) {
         free(result);
         free(data);
 
-        measure_rounds--;
-    } while (measure_rounds && measure_rounds >= 0);
+        measure_rounds--; // Dec. rounds if available
+    } while (measure && measure_rounds >= 0); // Do for each round if dash is set
 
     return EXIT_SUCCESS;
 }

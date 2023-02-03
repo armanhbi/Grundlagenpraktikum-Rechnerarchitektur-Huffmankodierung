@@ -9,9 +9,10 @@
 /**
  * @brief Reads the data from path into buf
  * @param path Path to the file
+ * @param length Pointer to an int having the length of the data read (Out paramter)
  * @return Returns the string saved in the file (Huffman encoding or normal ascii characters)
  */
-char *read_data(const char *path);
+char *read_data(const char *path, uint32_t *length);
 
 /**
  * @brief Saves the string in result into path
