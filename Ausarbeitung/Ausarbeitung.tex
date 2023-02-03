@@ -1,6 +1,6 @@
 % Diese Zeile bitte -nicht- aendern.
 \documentclass[course=erap]{aspdoc}
-
+\usepackage{tikz}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TODO: Ersetzen Sie in den folgenden Zeilen die entsprechenden -Texte-
 %% mit den richtigen Werten.
@@ -13,37 +13,78 @@
 % Diese Zeile bitte -nicht- aendern.
 \title{Gruppe \theGroup{} -- Abgabe zu Aufgabe \theNumber}
 
-\begin{document}
+\begin{document}-
 \maketitle
 
 \section{Einleitung}
+\subsection{Überblick}
 
-Die von David A. Huffman im Jahr 1952 entwickelte Huffmankodierung dient zu einer einfachen und verlustfreien Datenkompression.
-Der Algorithmus nutzt dabei die Tatsache aus, dass Symbole in einem Text unterschiedlich oft auftauchen. Zeichen, die öfters vorkommen, werden mit weniger Zeichen codiert als Zeichen, die selten auftauchen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
-
-Dabei wird nach einer Häufigkeitsanalyse der vorkommenden Symbole im Text diese in einem Huffmanbaum angeordnet, welche jedem Zeichen ihre entsprechende Bitsequenz zuordnet. Die Symbole, die häufiger in der Quelldatei auftauchen, befinden sich weiter oben im Baum und brauchen daher auch weniger Bits zum abspeichern. Die Besonderheit des Huffmanbaums liegt darin, dass dieser präfix-freie Sequenzen schafft.
+Viele Computer benutzen ASCII-Kodierung,%Link zur ascii tabelle?
+um Zeichen darzustellen. Dabei steht ASCII für American Standard Code for Information Interchange, welches jedes der 128 Symbole mit genau acht Bits representiert. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits codiert als Zeichen, die selten vorkommen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
+Dies ist das grundlegende Konzept der Huffmankodierung mit dem Ziel einer einfachen und verlustfreien Datenkompression, die von David A. Huffman im Jahr 1952 entwickelt worden ist.
+\subsection{Konzept}
+Dabei wird nach einer Häufigkeitsanalyse der Symbole im Text diese in einem Huffmanbaum angeordnet, welche jedem Zeichen ihre entsprechende Bitsequenz zuordnet. Die Symbole, die häufiger in der Quelldatei auftauchen, befinden sich weiter oben im Baum und brauchen daher auch weniger Bits zum Abspeichern. Die Besonderheit des Huffmanbaums liegt darin, dass dieser präfix-freie Sequenzen schafft.
 Dies bedeutet, dass jede Bitfolge einzigartig ist und keine Bitfolge mit dem Anfang einer anderen übereinstimmt. Sobald ein Zeichen zugeordnet worden ist, beginnt direkt die Bitfolge des nächsten Zeichen. Das ermöglicht es, die Daten ohne Trennzeichen zu speichern, sodass Redundanz minimiert wird.
 
-Als Beispiel wird der String $ABRACADABRAB$ komprimiert, welcher die folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
+Als Beispiel wird der String $ABRAKADABRAB$ komprimiert, welcher die folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
 
 \begin{center}
     \begin{tabular}{ |c|c|c|c|c| }
      \hline
-     A & B & C & D & R \\
+     A & B & D & K & R \\
      \hline
      5 & 3 & 1 & 1 & 2 \\
      \hline
     \end{tabular}
 \end{center}
 
-Daraufhin wird der präfix-freie Baum
-%(Bild Baum? mit Bitsequenz igwo keine 8 Bits pro zeichen (spezifizieren ob extended ascii oder normal) -> bites sparen, baum muss auch gespeichert werden, dennoch optimiert)
-Zum Schluss wird der Text buchstabenweise kodiert und abegespeichert. Zusätzlich muss auch der Baum abgespeichert werden, dennoch dient die Huffmankodierung bei vorallem längeren Texten optimierter.
-Das Verfahren ist soweit optimal, da es keinen anderen symbolbasierten Weg gibt, der einen kürzeren Code erzeugen könnte, insofern die Häufigkeiten der Symbole bekannt sind. \cite{4051119}
+Daraufhin wird der präfix-freie Huffmanbaum erstellt, welcher jedem Symbol ihre Bitsequenzen zuordnet. Die Zuordnung einer Bitfolge zu einem Symbol erfolgt durch das Traversieren %(?)
+des Baumes von der Wurzel bis zum jeweiligen Zeichen. Muss man dabei ein Knoten nach links beziehungsweise rechts, wird eine 0 beziehungsweise 1 an die kodierte Bitfolge drangehängt.
 
-Im Folgenden wird eine Implementierung der Huffmankodierung in der Programmiersprache C vorgestellt, welches es ermöglicht, Dateien zu komprimieren und zu dekodieren. Daraufhin wurde die Korrektheit dieser Implementierung mit Hilfe einer Vergleichsimplementierung bestimmt. Zum Schluss wurde die Performanz durch Zeitmessungen analysiert, indem der Algorithmus mit einer nicht optimierten Version und einer Vergleichsimplementierung verglichen wurde.
+
+% edge from parent node [left, black] {0} machen evtl kreise und evtl anderes beisplie
+\begin{center}
+    \begin{tikzpicture}
+\node{12} [sibling distance = 2.5cm, level distance = 0.8cm]
+    child {node {A:5} }
+    child {node {7} child {node {B:3}}
+    child {node {4} child {node {R:2}}
+    child {node {2} child {node {K:1}} child {node {D:1}}}}};
+\end{tikzpicture}
+\end{center}
+
+
+Mit der folgenden Zuweisung der Symbole kann das Beispiel nun dekodiert werden.
+%evtl tabelle und dann darunter zuweisung
+
+\begin{center}
+    \begin{tabular}{c|c}
+        \textbf{Symbol} & \textbf{Bitsequenz} \\
+        \hline
+        A & 0 \\
+        B & 10\\
+        D & 1111\\
+        K & 1110\\
+        R & 110
+    \end{tabular}
+    \label{tab:my_label}
+\end{center}
+\begin{center}
+    ABRAKADABRAB = 0 10 110 0 1110 0 1111 0 10 110 0 10
+\end{center}
+% problemstellun g bezog sich daruaf, dass wir eine effiziente methdoe unf platzsparende finden zum impleemtnieren.
+
+Ursprunglich hätte das Beispiel mit 12 · 8 = 96 Bits gespeichert werden müssen. Die Huffmankodierung reduziert das Wort auf insgesamt 1+2+3+1+4+1+4+1+2+3+1+2 = 26 Bits. Zusätzlich muss auch der Huffmanbaum abgespeichert werden, dennoch ermöglicht die Huffmankodierung bei vorallem längeren Texten und einem geeigneten, platzsparenden Format zum Speichern des Baums eine gute und einfache Datenkompression, insofern die Häufigkeiten der Symbole bekannt sind. Auf das Format zum Speichern des Baumes wird später genauer eingegangen.\cite{4051119}
+
+Im Folgenden wird eine Implementierung der Huffmankodierung in der Programmiersprache C vorgestellt, welches es ermöglicht, ASCII-Dateien zu komprimieren und zu dekodieren. Daraufhin wurde die Korrektheit und Kompressionsrate %hier oder in Performanzanalyse
+dieser Implementierung bestimmt. Zuletzt wurde die Performanz durch Zeitmessungen untersucht, indem der Algorithmus mit einer nicht optimierten Version und einer Vergleichsimplementierung analysiert wurde.
 
 \section{Lösungsansatz}
+\subsection{main.c}
+\subsection{tree.c}
+
+\subsection{encode}
+\subsection{decode}
 
 Probleme: evtl entarteter Baum ->nicht schlimm wegen Buffer 65000 rechnung -> max 265 char mal 8 -> 2048 passt schon ungefähr
 
@@ -51,7 +92,7 @@ Probleme: evtl entarteter Baum ->nicht schlimm wegen Buffer 65000 rechnung -> ma
 % TODO: Je nach Aufgabenstellung einen der Begriffe wählen
 \section{Korrektheit}
 
-Im Folgenden wird die Korrektheit im Gegensatz zur Genauigkeit analysiert, weil zu jeder Eingabe von Daten nach dem Verschlüsseln beziehungsweise Entschlüsseln genau eine spezifische Ausgabe zugeordnet wird.
+Im Folgenden wird die Korrektheit im Gegensatz zur Genauigkeit analysiert, weil zu jeder Eingabe von Daten nach der Kodierung beziehungsweise Dekodierung genau eine spezifische Ausgabe zugeordnet wird.
 
 \section{Performanzanalyse}
 
@@ -60,6 +101,7 @@ Die folgende Laufzeitanalyse wurde mit einem System mit einem AMD Ryzen 7 5700U 
 Um die Geschwindigkeit der finalen Implementierung zu analysieren, wurde diese mit einer nicht optimierten Version und einer Vergleichimplementierung verglichen.
 
 \section{Zusammenfassung und Ausblick}
+das ist ein test
 
 % TODO: Fuegen Sie Ihre Quellen der Datei Ausarbeitung.bib hinzu
 % Referenzieren Sie diese dann mit \cite{}.
