@@ -1,5 +1,7 @@
 #include "printer.h"
 
+unsigned int DEBUG_PRINT = 0;
+
 void print_binary(char integer, uint8_t length) {
     print(MAGENTA); // color code
 

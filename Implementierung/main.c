@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "huffman.h"
 #include "input_output.h"
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
 
     int impl_num = 0;
     bool measure = false; // Measure performance
-    int measure_rounds = 0; // How often?
+    unsigned int measure_rounds = 1; // How often?
     char *input_file = NULL; // Path
     bool decrypt = false;
     char *output_file = NULL;
@@ -30,7 +31,7 @@ int main(int argc, char **argv) {
     };
 
     int opt;
-    while ((opt = getopt_long(argc, argv, "V:B:o:dh", help_synonym, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "V:B:o:dhtp", help_synonym, NULL)) != -1) {
         switch (opt) {
             case 'V':
                 if (optarg == NULL) {
@@ -46,6 +47,10 @@ int main(int argc, char **argv) {
                     return EXIT_FAILURE;
                 }
                 measure_rounds = atoi(optarg); // How often should performance be measured
+                if (measure_rounds == 0 || measure_rounds == 1) {
+                    PRINT_HELP_MSG
+                    return EXIT_FAILURE;
+                }
                 break;
             case 'o':
                 if (optarg == NULL) {
@@ -54,8 +59,14 @@ int main(int argc, char **argv) {
                 }
                 output_file = optarg;
                 break;
+            case 'p':
+                DEBUG_PRINT = 1;
+                break;
             case 'd':
                 decrypt = true;
+                break;
+            case 't':
+                test_all();
                 break;
             case 'h': // Fallthrough
             default:
@@ -70,17 +81,21 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-//    test_all();
-//    return 0;
-
     input_file = argv[optind];
+
+    struct timespec start;
+    struct timespec end;
+    double added_times = 0.0;
 
     // STARTING HUFFMAN EN-/DECODING
 
-    do {
+    for (size_t i = 0; i < measure_rounds; i++) {
         char *data = NULL;
         uint32_t data_length[1] = {0}; // Measure length
         data = read_data(input_file, data_length); // Read string out of input file
+
+        if (measure)
+            clock_gettime(CLOCK_MONOTONIC, &start);
 
         if (data == NULL) {
             PRINT_HELP_MSG
@@ -113,12 +128,15 @@ int main(int argc, char **argv) {
         if (result == NULL)
             return EXIT_FAILURE;
 
+        if (measure)
+            clock_gettime(CLOCK_MONOTONIC, &end);
+
         print("%sRETURN VALUE%s\n", CYAN, WHITE);
         print("'%s%s%s'\n", RED, result, WHITE);
 
         // If output file was set / Data has value write data (HM code / decoded code) to output file
         if (output_file) {
-            if (write_data(output_file, result) != 0) {
+            if (write_data(output_file, result)) {
                 free(result);
                 free(data);
                 return EXIT_FAILURE;
@@ -128,8 +146,15 @@ int main(int argc, char **argv) {
         free(result);
         free(data);
 
-        measure_rounds--; // Dec. rounds if available
-    } while (measure && measure_rounds >= 0); // Do for each round if dash is set
+        if (measure) {
+            double time = end.tv_sec - start.tv_sec + 1e-9 * (end.tv_nsec - start.tv_nsec);
+            added_times += time;
+            printf("\nIteration %zu -> verbrauchte Zeit: %f\n", i, time);
+        }
+    }
+
+    if (measure)
+        printf("\nDurchschnittlich verbrauchte Zeit: %f\n", (added_times/measure_rounds));
 
     return EXIT_SUCCESS;
 }

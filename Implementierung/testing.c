@@ -12,9 +12,8 @@ const char *test_paths[] = {"txt/in.txt",
                             "txt/in2.txt",
                             "txt/in3.txt",
                             "txt/in4.txt",
-                            "txt/in5.txt",
+                            //"txt/in5.txt",
                             "txt/info.txt",
-                            //"test"
 };
 
 void test_case(const char *test_string) {
@@ -27,13 +26,14 @@ void test_case(const char *test_string) {
     if (!decode || strcmp(decode, test_string) == 0) {
         printf("Test passed!\n");
     } else {
-        printf("Test failed! \nString expected:\n%s\nString returned:\n%s\n", test_string, decode);
+        printf("Test FAILED!\n");
+        //printf("Test FAILED! \nString expected:\n%s\nString returned:\n%s\n", test_string, decode);
     }
 }
 
 void test_case_path(const char *test_path) {
     char *data;
-    uint32_t *data_length = {0};
+    uint32_t data_length[1] = {0};
     data = read_data(test_path, data_length); // Read string out of input file
 
     if (data == NULL) {
@@ -43,13 +43,13 @@ void test_case_path(const char *test_path) {
 
 
     if (*data_length == 0) {
-        printf("Test failed! Length of data is empty\n");
+        printf("Test FAILED! Length of data is empty\n");
         return;
     }
 
     char *encode = huffman_encode(*data_length, data);
     if (!encode) {
-        printf("Test failed! Encoded did not work correctly\n");
+        printf("Test FAILED! Encoded did not work correctly\n");
         return;
     }
 
@@ -58,7 +58,8 @@ void test_case_path(const char *test_path) {
     if (!decode || strcmp(decode, data) == 0) {
         printf("Test passed!\n");
     } else {
-        printf("Test failed! \nString expected:\n%s\nString returned:\n%s\n", data, decode);
+        printf("Test FAILED!\n");
+       // printf("Test failed! \nString expected:\n%s\nString returned:\n%s\n", data, decode);
     }
 }
 

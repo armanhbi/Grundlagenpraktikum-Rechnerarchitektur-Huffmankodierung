@@ -74,22 +74,24 @@ char *huffman_encode(size_t len, const char data[len]) {
             continue;
 
         Node *to_insert = create_node(i, table[i], NULL, NULL);
-        if (!to_insert)
+        if (!to_insert) {
+            free_heap(heap);
             return NULL;
+        }
 
         if (table[i] > 0) { // If frequency is > 0 add node to heap structure
-            print("'%c' kommt %s%d%s mal vor!\n", i, RED, table[i], WHITE);
             insert(heap, to_insert); // O(log n)
         }
     }
-    print("\n");
 
     if (heap->count == 1) {  // In the case that only one letter was given
         // pop the one element, create a null element and connect them both with a connecting node
         Node *only_element = pop_min(heap);
+        print("'%c' kommt %s%d%s mal vor!\n", only_element->character, RED, only_element->frequency, WHITE);
         Node *null = create_node('\0', 0, NULL, NULL);
         Node *connector = create_node('\0', only_element->frequency, only_element, null);
         if (!null || !connector) { // If one of the nodes did not create (memory) return null
+            free_heap(heap);
             return NULL;
         }
         insert(heap, connector); // Insert the connector back to the heap (it will get popped instantly)
@@ -100,11 +102,18 @@ char *huffman_encode(size_t len, const char data[len]) {
         Node *min1 = pop_min(heap); // No null check -> count already checks condition
         Node *min2 = pop_min(heap);
 
+        if (min1->character)
+            print("'%c' kommt %s%d%s mal vor!\n", min1->character, RED, min1->frequency, WHITE);
+        if (min2->character)
+            print("'%c' kommt %s%d%s mal vor!\n", min2->character, RED, min2->frequency, WHITE);
+
         // Connect them with connecting node ('\0') and add frequencies together (min1 is left and min2 right tree branch)
         Node *connector = create_node('\0', min1->frequency + min2->frequency, min1, min2);
 
-        if (!connector)
+        if (!connector) {
+            free_heap(heap);
             return NULL;
+        }
 
         insert(heap, connector); // Insert connector node into heap O (log n)
     }
@@ -113,7 +122,7 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     free_heap(heap);
 
-    print("%sTree creation%s\n", CYAN, WHITE);
+    print("\n%sTree creation%s\n", CYAN, WHITE);
     print_tree_inorder(root);
     print("\n\n");
 
@@ -122,6 +131,8 @@ char *huffman_encode(size_t len, const char data[len]) {
 
     if (!huffman) { // malloc check
         perror("Huffman Code memory space could not be allocated");
+        free_node(root);
+        free(huffman);
         return NULL;
     }
 
@@ -160,6 +171,12 @@ char *huffman_encode(size_t len, const char data[len]) {
         uint32_t mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
 
         for (uint32_t i = 0; mask; i++) {
+//            // If the Huffman Code is too long -> Error => Not really necessary because of check in read_data
+//            if (huffman_index > BUF_LENGTH) {
+//                perror("Der Huffman Code ist zu lang");
+//                free(huffman);
+//                return NULL;
+//            }
             huffman[huffman_index++] = ((code & mask) >> (length - 1 - i)) ? '1' : '0'; // translate character to binary
             mask >>= 1;
         }
@@ -191,12 +208,14 @@ char *huffman_decode(size_t len, const char data[len]) {
         }
         if (data[i] != '0' && data[i] != '1') {
             fprintf(stderr, "DecodeException: There is an invalid character to decode -> %c", data[i]);
+            free(buf);
             return NULL;
         }
     }
 
     if (separator == 0) { // nothing to decode or no new line in data
         perror("DecodeException: No newline was found in the decoded string");
+        free(buf);
         return NULL;
     }
 
@@ -204,8 +223,10 @@ char *huffman_decode(size_t len, const char data[len]) {
     uint32_t cur[1] = {0};
     Node *tree_root = decode_tree(&data[0], cur);
 
-    if (!tree_root)
+    if (!tree_root) {
+        free(buf);
         return NULL;
+    }
 
     print("%sRebuilding tree%s\n", CYAN, WHITE);
     print_tree_inorder(tree_root);
@@ -230,6 +251,8 @@ char *huffman_decode(size_t len, const char data[len]) {
 
     if (pointer != tree_root) {
         perror("The Huffman Encoding is wrong");
+        free(buf);
+        free(tree_root);
         return NULL;
     }
 

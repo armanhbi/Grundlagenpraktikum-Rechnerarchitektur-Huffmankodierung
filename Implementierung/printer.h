@@ -6,9 +6,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define BUF_LENGTH 262144 // 2^18
+#define BUF_LENGTH 65536 // 2^16
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
-#define DEBUG_PRINT 0
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
 #define PRINT_HELP_MSG fprintf(stderr, "\nusage: huffman <input_file> [-V version_num] [-B n] [-d] [-o output_file] [-h]\n\n"\
@@ -25,6 +24,8 @@
 #define CYAN "\033[36m"
 #define GREEN "\033[32m"
 #define MAGENTA "\033[35m"
+
+unsigned int DEBUG_PRINT;
 
 /**
  * @brief Prints a character as binary (with set length)
