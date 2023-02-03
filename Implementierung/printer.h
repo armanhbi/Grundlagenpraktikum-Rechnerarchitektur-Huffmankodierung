@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define BUF_LENGTH 65536 // 2^16
+#define BUF_LENGTH 131072 // 2^17
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html

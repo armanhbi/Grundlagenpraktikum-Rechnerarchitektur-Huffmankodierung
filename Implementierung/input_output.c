@@ -34,7 +34,7 @@ char *read_data(const char *path, uint32_t *length) {
         if (c == '\0' || feof(fd)) // end was hit or \0 was hit or text extended BUFFER LENGTH (should rarely happen)
             break;
         if (i == BUF_LENGTH) {
-            perror("Der eingegebene String ist zu lang! (Max: 2^17 Zeichen )");
+            perror("Der eingegebene String ist zu lang! (Max: 131072 Zeichen)");
             return NULL;
         }
         buf[i++] = c; // add it to the buffer
