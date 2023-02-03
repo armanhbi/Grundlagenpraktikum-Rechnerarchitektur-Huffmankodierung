@@ -54,38 +54,33 @@ char *huffman_encode(size_t len, const char data[len]) {
         return NULL;
     }
 
-    Node *table[HEAP_SIZE] = {0}; // create table (same as extended unicode table (8 bits))
+    uint16_t table[HEAP_SIZE] = {0};
+    //Node *table[HEAP_SIZE] = {0}; // create table (same as extended unicode table (8 bits))
 
     // COUNT OCCURRENCES OF LETTERS
 
     for (size_t i = 0; i < len; i++) { // Go through input string
-        if (table[(uint8_t) data[i]] == NULL) { // If not already in table -> create node
-            Node *first_node = create_node(data[i], 1, NULL, NULL);
-            if (!first_node)
-                return NULL;
-
-            table[(uint8_t) data[i]] = first_node;
-        } else {
-            table[(uint8_t) data[i]]->frequency += 1; // increment for every following letter (counting appearance)
-        }
+        table[(uint8_t) data[i]] += 1; // increment for every following letter (counting appearance)
     }
 
     // FILL HEAP
 
     Heap *heap = create_heap(HEAP_SIZE); // Create Min Heap
-
     if (!heap)
         return NULL;
 
     print("%sHäufigkeitsanalyse%s\n", CYAN, WHITE);
-    for (uint16_t i = 0; i < 256; i++) { // O(n log n)
-        if (table[i] == 0x0) // if pointer is null
+    for (uint16_t i = 0; i < HEAP_SIZE; i++) { // O(n log n)
+        if (table[i] == 0) // if the value in the table is zero
             continue;
 
-        uint16_t frequency = table[i]->frequency;
-        if (frequency > 0) { // If frequency is > 0 add node to heap structure
-            print("'%c' kommt %s%d%s mal vor!\n", i, RED, frequency, WHITE);
-            insert(heap, table[i]);
+        Node *to_insert = create_node(i, table[i], NULL, NULL);
+        if (!to_insert)
+            return NULL;
+
+        if (table[i] > 0) { // If frequency is > 0 add node to heap structure
+            print("'%c' kommt %s%d%s mal vor!\n", i, RED, table[i], WHITE);
+            insert(heap, to_insert);
         }
     }
     print("\n");
@@ -142,15 +137,15 @@ char *huffman_encode(size_t len, const char data[len]) {
     // TREE TO DICTIONARY
 
     // One array for the huffman code (lookup), one for the length of the code because binary saved (length)
-    uint8_t length_table[256] = {0}; // savable in 3 bits -> max. huffman code length of ?
-    uint32_t lookup_table[256] = {0};
+    uint8_t length_table[HEAP_SIZE] = {0}; // savable in 3 bits -> max. huffman code length of ?
+    uint32_t lookup_table[HEAP_SIZE] = {0};
 
     tree_to_dic(root, length_table, lookup_table, 0, 0);
 
     free_node(root);
 
     print("\n\n%sDictionary%s\n", CYAN, WHITE);
-    for (uint16_t i = 0; i < 256; i++) { // For every ascii character
+    for (uint16_t i = 0; i < HEAP_SIZE; i++) { // For every ascii character
         if (length_table[i] != 0) {
             print("'%c' -> ", i);
             print_binary(lookup_table[i], length_table[i]);
@@ -234,10 +229,10 @@ char *huffman_decode(size_t len, const char data[len]) {
         }
     }
 
-    if (pointer != tree_root) {
-        perror("The Huffman Encoding is wrong");
-        return NULL;
-    }
+//    if (pointer != tree_root) {
+//        perror("The Huffman Encoding is wrong");
+//        return NULL;
+//    }
 
     free(tree_root);
     return buf; // Return decodede huffman code as string
