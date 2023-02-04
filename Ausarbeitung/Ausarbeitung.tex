@@ -50,8 +50,28 @@ Am Ende bleibt nur noch ein Node im Min-Heap übrig, welcher den fertigen Huffma
 \subsection{Decode}
 
 % TODO: Je nach Aufgabenstellung einen der Begriffe wählen
-\section{Korrektheit/Genauigkeit}
+\section{Korrektheit}
 
+Es wird auf die Korrektheit des Huffman Algorithmus eingegangen, da er verlustfreie Komprimierung ermöglicht und somit Genauigkeit als Thema unangemessen wäre.
+Um das Problem des optimalen und präfixfreien Codes zu lösen sind zunächst einige Definitionen notwendig.
+
+\subsection{Kodierungstheorie}
+
+Das \textit{Quellalphabet} der Länge $n$ entspricht der Anzahl an verschiedenen Zeichen die in der Quelldatei vorkommen. In diesem Fall entspricht das maximale Quellalphabet der Menge an ASCII Zeichen.
+Jedem Zeichen wird ein \textit{Gewicht} $w$ zugeordnet, welches hier der absoluten Häufigkeit des Zeichens in der Quelldatei entspricht. Die Menge der Gewichte ist somit definiert als $W = \langle w_i > 0 \mid 0 \le i < n \rangle $.
+Des Weiteren wird auch ein \textit{Codealphabet} definiert, welches die Binäre Menge $\lbrace0, 1\rbrace$ ist, mit dem die Quelldatei komprimiert wird.
+Der \textit{Code} ordnet jedem Zeichen $i$ des Quelllphabets ein Codewort aus dem Codealphabet der Länge $l_i$ zu und ist definiert als die Menge $T = \langle l_i > 0 \mid 0 \le i < n \rangle$.
+
+Die Kraft-McMillan-Ungleichung gilt als notwendige Bedingung für präfixfreie Codes.
+$$\mathcal{K}(T) = \sum_{i=0}^{n-1} 2^{-l_i} \le 1$$
+Codes die diese Bedingung erfüllen werden \textit{zulässig} genannt, dies bedeutet dass eine Belegung an Codewörten existiert, die präfixfrei sind.
+Eine Menge an Codewörten ist für einen gegebenen Code \textit{gültig}, insofern die Längen $\langle l_i \rangle$ übereinstimmen und kein Codewort präfix eines Anderen ist.
+Es ist somit möglich zu sagen, dass eine präfixfreier Code determiniert wurde, sobald ein zulässiger Code gefunden wurde, ohne die spezifischen Codewörter zu betrachten, da man weiß, dass eine gültige Belegung existiert.
+
+Zuletzt sind noch die \textit{Kosten} $C$ eines Codes zu definieren, welches der Länge der kodierten Nachricht entspricht.
+$$C(W,T) = C(\langle w_i \rangle,\langle l_i \rangle) = \sum_{i=0}^{n-1} w_i \cdot l_i $$
+Ein Code $T = \langle l_i > 0 \mid 0 \le i < n \rangle$ gilt als optimal, falls für jeden anderen zulässigen Code T' der Länge $n$ gilt: $C(W,T) \le C(W,T^{\prime})$. Dies bedeutet auch, dass mehrere optimale Codes für eine gegebene Quelldatei existieren können.
+Für einen optimalen Code muss die Kraft-McMillan-Summe 1 ergeben, da bei kleineren Werten immer ein Codewort gekürzt werden kann, während größere Werte von Anfang an nicht zulässig sind.
 
 \section{Performanzanalyse}
 
