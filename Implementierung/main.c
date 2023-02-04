@@ -10,7 +10,7 @@
 #include "input_output.h"
 #include "printer.h"
 #include "testing.h"
-#include "vergleichsimplementierung.h"
+//#include "vergleichsimplementierung.h"
 
 int main(int argc, char **argv) {
     // Checking if program and arguments are valid
