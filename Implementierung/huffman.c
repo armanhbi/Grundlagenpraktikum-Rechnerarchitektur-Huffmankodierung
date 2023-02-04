@@ -79,9 +79,7 @@ char *huffman_encode(size_t len, const char data[len]) {
             return NULL;
         }
 
-        if (table[i] > 0) { // If frequency is > 0 add node to heap structure
-            insert(heap, to_insert); // O(log n)
-        }
+        insert(heap, to_insert); // O(log n)
     }
 
     if (heap->count == 1) {  // In the case that only one letter was given
