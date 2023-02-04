@@ -82,6 +82,17 @@ dieser Implementierung bestimmt. Zuletzt wurde die Performanz durch Zeitmessunge
 \section{Lösungsansatz}
 \subsection{main.c}
 \subsection{tree.c}
+Zusätzlich muss neben den komprimierten Daten der Baum gespeichert werden, um den Text später dekodieren zu können. Um dennoch von dem Vorteil der Huffmankodierung zu gewinnen, muss ein insbesondere platzsparendes Format genutzt werden. Die Häufigkeit der einzelnen Zeichen ist für das Dekodieren irrelevant und wird daher nicht mitgespeichert.
+Man traversiert den Baum in Pre-Order von der Wurzel. Falls dies ein Blattknoten ist, werden 1-Bit und darauf 8 Bits für das ASCII-Symbol gespeichert, welches das Blatt repräsentiert. Ist es kein Blattknoten, wird ein 0-Bit gespeichert. Daraufhin werden die beiden Kinder-Knoten kodiert, wobei erst das linke und dann das rechte betrachtet wird.
+Für den Baum in Abbildung 1 würde die Folge wie folgt aussehen:
+
+\begin{center}
+    01 01000001 (A) 01 01000010 (B) 01 01010010 (R) 01 01000100 (D) 1 01001011 (K)
+\end{center}
+
+Im Ausgabeformat haben wir uns dazu entschieden, den Baum genau so darzustellen, wie er im Speicher mit Bits aussehen wurde. Folglich haben wir auf die Buchstaben und Leerzeichen wie im Beispiel verzichtet. In der nächsten Zeile steht die kodierte Bitsequenz der Quelldatei. %natürlich werden es evtl etwas mehr bity sein , da alles in bytes gespeichert wird aber
+Auch das Dekodieren funktioniert ganz einfach. Man geht durch die Bitsequenz, welche den Baum representiert und fängt bei der Wurzel an. Bei einem 0 Bit erstellt man einen NULL-Knoten und macht mit seinem linken Kindknoten weiter.
+Bei einem 1-Bit erstellt man einen Blattknoten, welcher das ASCII-Zeichen beinhaltet, die die nächsten 8 Bits der Bitsequenz repräsentieren. Für das nächste Bit muss man den Baum so weit nach oben traversieren, bis der rechte Kindknoten eines Knotens nicht definiert ist.
 
 \subsection{encode}
 \subsection{decode}
