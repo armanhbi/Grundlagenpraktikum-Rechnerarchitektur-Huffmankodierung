@@ -119,10 +119,22 @@ int main(int argc, char **argv) {
         print("\nString in file: '%s%s%s' (Length: %s%zu%s)\n\n", RED, data, WHITE, RED, *data_length, WHITE);
 
         char *result = NULL;
-        if (decrypt) {
-            result = huffman_decode(*data_length, data);
-        } else {
-            result = huffman_encode(*data_length, data);
+
+        switch (impl_num) {
+            case 1:
+                if (decrypt) {
+                    printf("Wird noch gemacht\n");
+                } else {
+                    printf("Wird noch gemacht\n");
+                }
+                break;
+            default:
+                if (decrypt) {
+                    result = huffman_decode(*data_length, data);
+                } else {
+                    result = huffman_encode(*data_length, data);
+                }
+                break;
         }
 
         if (result == NULL)

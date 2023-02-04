@@ -192,7 +192,7 @@ char *huffman_decode(size_t len, const char data[len]) {
     }
 
     // save enough space for up to BUF_LENGTH characters (won't get more because it is checked in read_data and encode)
-    char *buf = malloc(BUF_LENGTH);
+    char *buf = calloc(BUF_LENGTH, sizeof(char));
     uint32_t index = 0;
     size_t separator = 0;
 
