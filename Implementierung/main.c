@@ -131,7 +131,16 @@ int main(int argc, char **argv) {
         if (measure)
             clock_gettime(CLOCK_MONOTONIC, &end);
 
-        print("%sRETURN VALUE%s\n", CYAN, WHITE);
+        if (!decrypt) {
+            uint64_t without = *data_length * 8;
+            uint32_t with = strlen(result);
+            print("%sOhne Huffman: %d Bits%s\n", CYAN, without, WHITE);
+            print("%sMit Huffman: %d Bits%s\n", CYAN, with, WHITE);
+            double rate = (double) with / without;
+            print("%sHuffman Rate: %f%s\n", CYAN, rate, WHITE);
+        }
+
+        print("\n%sRETURN VALUE%s\n", CYAN, WHITE);
         print("'%s%s%s'\n", RED, result, WHITE);
 
         // If output file was set / Data has value write data (HM code / decoded code) to output file
