@@ -10,6 +10,7 @@
 #include "input_output.h"
 #include "printer.h"
 #include "testing.h"
+#include "vergleichsimplementierung.h"
 
 int main(int argc, char **argv) {
     // Checking if program and arguments are valid
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
                 break;
             case 't':
                 test_all();
-                break;
+                return EXIT_SUCCESS;
             case 'h': // Fallthrough
             default:
                 PRINT_HELP_MSG
@@ -83,8 +84,8 @@ int main(int argc, char **argv) {
 
     input_file = argv[optind];
 
-    struct timespec start;
-    struct timespec end;
+    struct timespec start_time;
+    struct timespec end_time;
     double added_times = 0.0;
 
     // STARTING HUFFMAN EN-/DECODING
@@ -95,7 +96,7 @@ int main(int argc, char **argv) {
         data = read_data(input_file, data_length); // Read string out of input file
 
         if (measure)
-            clock_gettime(CLOCK_MONOTONIC, &start);
+            clock_gettime(CLOCK_MONOTONIC, &start_time);
 
         if (data == NULL) {
             PRINT_HELP_MSG
@@ -122,12 +123,8 @@ int main(int argc, char **argv) {
 
         switch (impl_num) {
             case 1:
-                if (decrypt) {
-                    printf("Wird noch gemacht\n");
-                } else {
-                    printf("Wird noch gemacht\n");
-                }
-                break;
+                printf("On the process...\n");
+                return EXIT_FAILURE;
             default:
                 if (decrypt) {
                     result = huffman_decode(*data_length, data);
@@ -141,7 +138,7 @@ int main(int argc, char **argv) {
             return EXIT_FAILURE;
 
         if (measure)
-            clock_gettime(CLOCK_MONOTONIC, &end);
+            clock_gettime(CLOCK_MONOTONIC, &end_time);
 
         if (!decrypt) {
             uint64_t without = *data_length * 8;
@@ -149,10 +146,10 @@ int main(int argc, char **argv) {
             print("%sOhne Huffman: %d Bits%s\n", CYAN, without, WHITE);
             print("%sMit Huffman: %d Bits%s\n", CYAN, with, WHITE);
             double rate = (double) with / without;
-            print("%sHuffman Rate: %f%s\n", CYAN, rate, WHITE);
+            print("%sHuffman Rate: %f%s\n\n", CYAN, rate, WHITE);
         }
 
-        print("\n%sRETURN VALUE%s\n", CYAN, WHITE);
+        print("%sRETURN VALUE%s\n", CYAN, WHITE);
         print("'%s%s%s'\n", RED, result, WHITE);
 
         // If output file was set / Data has value write data (HM code / decoded code) to output file
@@ -168,7 +165,7 @@ int main(int argc, char **argv) {
         free(data);
 
         if (measure) {
-            double time = end.tv_sec - start.tv_sec + 1e-9 * (end.tv_nsec - start.tv_nsec);
+            double time = end_time.tv_sec - start_time.tv_sec + 1e-9 * (end_time.tv_nsec - start_time.tv_nsec);
             added_times += time;
             printf("\nIteration %zu -> verbrauchte Zeit: %f\n", i, time);
         }

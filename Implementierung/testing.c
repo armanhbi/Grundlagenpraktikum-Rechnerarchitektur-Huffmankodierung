@@ -12,7 +12,7 @@ const char *test_paths[] = {"txt/in.txt",
                             "txt/in2.txt",
                             "txt/in3.txt",
                             "txt/in4.txt",
-                            //"txt/in5.txt",
+                            "txt/in5.txt",
                             "txt/info.txt",
 };
 

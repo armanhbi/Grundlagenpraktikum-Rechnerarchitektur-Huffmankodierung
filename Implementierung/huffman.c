@@ -166,14 +166,14 @@ char *huffman_encode(size_t len, const char data[len]) {
     print("\n");
 
     for (size_t i = 0; i < len; i++) {
-        uint32_t code = lookup_table[(uint16_t) data[i]]; // Get huffman code as int
+        uint32_t code = lookup_table[(uint8_t) data[i]]; // Get huffman code as int
         uint8_t length = length_table[(uint8_t) data[i]]; // Get length of huffman code
         uint32_t mask = 1 << (length - 1); // mask moving from length to the end of the character (right side)
 
         for (uint32_t i = 0; mask; i++) {
             // If the Huffman Code is too long -> Error => Not really necessary because of check in read_data
             if (huffman_index > BUF_LENGTH) {
-                perror("Der Huffman Code würde zu lang werden als Memory reserviert ist");
+                perror("Der Huffman Code würde länger werden als Memory reserviert ist");
                 free(huffman);
                 return NULL;
             }

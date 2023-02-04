@@ -21,7 +21,7 @@ char *read_data(const char *path, uint32_t *length) {
         return NULL;
     }
 
-    fd = fopen(path, "r"); // open file with path and in reading mode
+    fd = fopen(path, "rb"); // open file with path and in reading mode
 
     if (!fd) { // if opening the file did not work
         perror("Opening a file did not work as expected");
