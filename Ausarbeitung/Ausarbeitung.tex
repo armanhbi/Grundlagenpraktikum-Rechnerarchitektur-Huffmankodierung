@@ -56,7 +56,6 @@ des Baumes von der Wurzel bis zum jeweiligen Zeichen. Muss man dabei ein Knoten 
             child {node {2} child {node {K:1}} child {node {D:1}}}}};
     \end{tikzpicture}
     \caption{Huffmanbaum}
-    \label{fig:my_label}
 \end{figure}
 
 
@@ -72,7 +71,6 @@ Mit der folgenden Zuweisung der Symbole kann das Beispiel nun dekodiert werden.
         K & 1110\\
         R & 110
     \end{tabular}
-    \label{tab:my_label}
 \end{center}
 \begin{center}
     ABRAKADABRAB = 0101100111001111010110010
@@ -96,7 +94,7 @@ Hier befindet sich das Rahmenprogramm. Die folgenden Argumente können mittels d
 -o ist der Name der Ausgabedatei und -d gibt an ob das Programm encodieren oder dekodieren soll. Falls das Argument -h oder invalide Argumente gefunden werden, wird eine Hilfsnachricht ausgedruckt und das Programm mit dem Rückgabewert -1 abgebrochen.
 Zuletzt sollte noch der Name der Eingabedatei, ohne Argument, gefunden werden, wenn diese nicht existiert wird die Hilfe ausgegeben.
 
-Nach den Argumenten wird die Eingabedatei ausgelsesen und in einem String, sowie die Länge des Strings, gespeichert. Nun wird je nach gesetztem -d Flag entweder die encode() oder decode() Funktion, mit dem String und dessen Länge als Parameter, aufgerufen.
+Nach den Argumenten wird die Eingabedatei ausgelesen und in einem String, sowie die Länge des Strings, gespeichert. Nun wird je nach gesetztem -d Flag entweder die encode() oder decode() Funktion, mit dem String und dessen Länge als Parameter, aufgerufen.
 Zum Schluss wird das Ergebnis des Huffman Algorithmus wieder zurück in die Ausgabedatei geschrieben. Wenn irgendwo ein Fehler passiert ist und das Ergebnis nicht existiert, wird die Hilfe ausgegeben.
 
 \subsection{tree.c/heap.c}
