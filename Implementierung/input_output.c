@@ -9,9 +9,9 @@ int is_dir(const char *path) {
 
 char *read_data(const char *path, uint32_t *length) {
     FILE *fd = NULL;
-    char *buf = malloc(BUF_LENGTH * sizeof(char)); // save enough space for up to BUF_LENGTH characters
+    char *buf = calloc(BUF_LENGTH, sizeof(char)); // save enough space for up to BUF_LENGTH characters
 
-    if (!buf) { // if malloc did not work
+    if (!buf) { // if calloc did not work
         perror("Buffer for reading a file could not be allocated");
         return NULL;
     }

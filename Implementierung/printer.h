@@ -6,8 +6,9 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define BUF_LENGTH 131072 // 2^17
+#define BUF_LENGTH 65536 // 2^16
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
+#define HEAP_SIZE 256 // max. size for all extended ASCII characters in heap
 
 // Help message created with following standard: http://courses.cms.caltech.edu/cs11/material/general/usage.html
 #define PRINT_HELP_MSG fprintf(stderr, "\nusage: huffman <input_file> [-V version_num] [-B n] [-d] [-o output_file] [-h]\n\n"\

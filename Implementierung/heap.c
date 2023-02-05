@@ -1,18 +1,18 @@
 #include "heap.h"
 
 Heap *create_heap(int capacity) {
-    Heap *heap = (Heap *) malloc(sizeof(Heap)); // Allocating memory for the heap
+    Heap *heap = (Heap *) calloc(1, sizeof(Heap)); // Allocating memory for the heap
 
-    if (!heap) { // check malloc of heap
+    if (!heap) { // check calloc of heap
         perror("HeapException: Memory for the heap could not be allocated");
         return NULL;
     }
 
     heap->count = 0;
     heap->capacity = capacity;
-    heap->arr = malloc(capacity * sizeof(Node *)); // Allocate memory for every pointer (~64 bit * 256 = 1-2kb)
+    heap->arr = calloc(capacity, sizeof(Node *)); // Allocate memory for every pointer (~64 bit * 256 = 1-2kb)
 
-    if (!heap->arr) { // check malloc of array
+    if (!heap->arr) { // check calloc of array
         perror("HeapException: Memory for the array in a heap could not be allocated");
         return NULL;
     }

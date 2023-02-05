@@ -10,7 +10,7 @@
 #include "input_output.h"
 #include "printer.h"
 #include "testing.h"
-//#include "vergleichsimplementierung.h"
+#include "shannonfano.h"
 
 int main(int argc, char **argv) {
     // Checking if program and arguments are valid
@@ -123,8 +123,12 @@ int main(int argc, char **argv) {
 
         switch (impl_num) {
             case 1:
-                printf("On the process...\n");
-                return EXIT_FAILURE;
+                if (decrypt) {
+                    //result = huffman_decode(*data_length, data);
+                } else {
+                    result = shannonfano_encode(*data_length, data);
+                }
+                break;
             default:
                 if (decrypt) {
                     result = huffman_decode(*data_length, data);
@@ -143,10 +147,10 @@ int main(int argc, char **argv) {
         if (!decrypt) {
             uint64_t without = *data_length * 8;
             uint32_t with = strlen(result);
-            print("%sOhne Huffman: %d Bits%s\n", CYAN, without, WHITE);
-            print("%sMit Huffman: %d Bits%s\n", CYAN, with, WHITE);
+            print("%sOhne Codierung:\t\t %d Bits%s\n", CYAN, without, WHITE);
+            print("%sMit Codierung:\t\t %d Bits%s\n", CYAN, with, WHITE);
             double rate = (double) with / without;
-            print("%sHuffman Rate: %f%s\n\n", CYAN, rate, WHITE);
+            print("%sHuffman Rate:\t\t %f%s\n\n", CYAN, rate, WHITE);
         }
 
         print("%sRETURN VALUE%s\n", CYAN, WHITE);

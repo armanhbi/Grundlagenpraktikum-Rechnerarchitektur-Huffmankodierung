@@ -1,8 +1,8 @@
 #include "tree.h"
 
 Node *create_node(char character, uint16_t frequency, Node *left, Node *right) {
-    Node *created_node = malloc(sizeof(Node)); // save enough memory for a new node
-    if (!created_node) { // check malloc
+    Node *created_node = calloc(1, sizeof(Node)); // save enough memory for a new node
+    if (!created_node) { // check calloc
         perror("TreeException: Memory for a node could not be allocated");
         return NULL;
     }

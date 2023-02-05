@@ -12,8 +12,6 @@
 
 #include "tree.h"
 
-#define HEAP_SIZE 256 // max. size for all extended ASCII characters in heap
-
 // Creating heap structure with appropriate attributes
 typedef struct Heap Heap;
 struct Heap {

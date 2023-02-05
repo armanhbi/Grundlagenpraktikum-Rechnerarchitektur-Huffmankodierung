@@ -125,9 +125,9 @@ char *huffman_encode(size_t len, const char data[len]) {
     print("\n\n");
 
     // Huffman Array with ==> compressed_tree + '\n' + huffman_code
-    char *huffman = malloc(BUF_LENGTH * sizeof(char));
+    char *huffman = calloc(BUF_LENGTH, sizeof(char));
 
-    if (!huffman) { // malloc check
+    if (!huffman) { // calloc check
         perror("Huffman Code memory space could not be allocated");
         free_node(root);
         free(huffman);
@@ -194,7 +194,7 @@ char *huffman_decode(size_t len, const char data[len]) {
     uint32_t index = 0;
     size_t separator = 0;
 
-    if (!buf) { // malloc check
+    if (!buf) { // calloc check
         perror("The buffer in decoding could not be allocated");
         return NULL;
     }
