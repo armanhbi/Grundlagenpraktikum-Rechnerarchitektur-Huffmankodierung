@@ -245,6 +245,11 @@ char *huffman_decode(size_t len, const char data[len]) {
                 buf[index++] = pointer->character;
                 pointer = tree_root;
             }
+        }  else {
+            fprintf(stderr, "DecodeException: There is an invalid character to decode -> %c", data[i]);
+            free(buf);
+            free(tree_root);
+            return NULL;
         }
     }
 
