@@ -73,6 +73,57 @@ $$C(W,T) = C(\langle w_i \rangle,\langle l_i \rangle) = \sum_{i=0}^{n-1} w_i \cd
 Ein Code $T = \langle l_i > 0 \mid 0 \le i < n \rangle$ gilt als optimal, falls für jeden anderen zulässigen Code T' der Länge $n$ gilt: $C(W,T) \le C(W,T^{\prime})$. Dies bedeutet auch, dass mehrere optimale Codes für eine gegebene Quelldatei existieren können.
 Für einen optimalen Code muss die Kraft-McMillan-Summe 1 ergeben, da bei kleineren Werten immer ein Codewort gekürzt werden kann, während größere Werte von Anfang an nicht zulässig sind.
 
+\subsection{Optimalität}
+
+Um zu zeigen, dass der Huffman Algorithmus tatsächlich optimal ist, muss zunächst die \textit{geschwister Eigenschaft} betrachtet werden.
+Diese besagt, dass ein optimaler Code existiert, bei dem die zwei Zeichen mit dem geringsten Gewicht geschwister sind, also einen Elternknoten im zugehörigen Binärbaum teilen.
+
+Angenommen es gibt einen optimalen Code $T = \langle l_i \rangle $ mit einer Häufigkeitsverteilung $W = \langle w_i \rangle $ auf $n$ Zeichen.
+Da jeder nicht-Blatt Knoten zwei Kinder haben muss, existieren zwei Blatt Knoten mit der höchsten Tiefe $ L = max_i l_i$. Ohne Beschränkung der Allgemeinheit sind diese Knoten $w_{n-1}$ und $w_{n-2}$ diejenigen mit den geringsten Gewicht. Falls sie die selbe Tiefe haben, kann der Baum nun umstrukturiert werden, um die beiden Knoten zu Geschwistern zu machen, ohne die Kosten des Codes zu verändern.
+
+Der Beweis der Optimalität erfolgt durch Induktion über der Anzahl an Zeichen $n$. \cite{HufProof}
+Als Induktionsbasis gilt n = 2, da es hier nur den optimalen Code $ \langle l_i \rangle = \langle 1, 1 \rangle $ geben kann, nähmlich die beiden Codewörter 0 und 1.
+Es wird angenommen, dass die Aussage für $(n-1)$ Zeichen valide ist um sie für $n$ Zeichen zu beweisen.
+Man nimmt an es gibt die Gewichte $W = \langle w_0,..., w_{n-2}, w_{n-1} \rangle $, sodass für die Gewichte ohne Beschränkung der Allgemeinheit gilt $w_o \ge w_1 \ge ... \ge w_{n-1} > 0$.
+
+Ausgehend von der geschwister Eigenschaft kann man nun sagen, dass es einen Optimalen Code $T = \langle l_0,..., l_{n-2}, l_{n-1} \rangle$ gibt, wo die Gewichte $w_{n-1}$ und $w_{n-2}$ geschwister sind. Es gilt nun zu Beweisen, dass der durch Huffman hergeleitete Code $H$ dieselben Kosten hat.
+
+Wenn man nun die beiden Knoten $w_{n-2}$ und $w_{n-1}$ entfernt und dem Elternknoten die Summe der Gewichte zuordnet, erhält man den Code $T^{\prime}$ mit $(n-1)$ Zeichen und den Gewichten $W^{\prime} = \langle w_0,..., w_{n-3}, w_{n-2} + w_{n-1} \rangle$.
+Das Selbe geschieht nun für den Huffman Code $H^{\prime}$ mit den gleichen Gewichten $W_H^{\prime} = \langle w_0,..., w_{n-3}, w_{n-2} + w_{n-1} \rangle $ per Definition vom Huffman Algorithmus.
+Es gilt per Induktionsannahme: 
+$$C(W_H^{\prime}, H^{\prime}) = C(W^\prime, T^{\prime})$$
+Ebenfalls gilt,
+$$ C(W^\prime, T^{\prime}) = C(W, T) - (w_{n-2} + w_{n-1})$$
+da die Summe der Knoten $w_{n-2}$ und $w_{n-1}$ nun auf der Tiefe $L-1$ liegt.
+Das selbe gilt wiederum für den Huffman Code:
+$$ C(W_H^\prime, H^{\prime}) = C(W_H, H) - (w_{n-2} + w_{n-1})$$
+Diese drei Gleichungen resultieren in folgendem Beweis.
+$$ C(W_H, H) = C(W_H^\prime, H^{\prime}) + w_{n-2} + w_{n-1} = C(W^\prime, T^{\prime}) + w_{n-2} + w_{n-1} = C(W, T) $$
+
+\subsection{Komprimierungseffektivität}
+
+Claude Shannon definierte, 1948, die \textit{Entropie} einer Menge an Gewichten folgendermaßen. \cite{6773024}
+$$ \mathcal{H}(W) = - \sum_{i=0}^{n-1} w_i \cdot log_2 \frac{w_i}{m} $$
+Sie lässt sich aufteilen auf die Summe der Gewichte $m = \sum_{i=0}^{n-1} w_i$ und den entropischen Kosten (in Bits) $-log_2 (w_i/m) = log_2 (m/w_i) $ einer Instanz eines Zeichens, welches mit einer Wahrscheinlichkeit von $(w_i/m)$ auftritt.
+Die Entropie $\mathcal{H}(W)$ gibt die geringste mögliche Länge in Bits an, die der komprimierte Code haben kann, wenn man die Häufigkeitsverteilung mit einbezieht.
+Der \textit{relative Effektivitätsverlust} $\mathcal{E}$ eines zulässigen Codes $T$ und der zugehörigen Gewichte $W$ ist durch folgende Gleichung zu berechnen.
+$$ \mathcal{E}(W, T) = - \frac{C(W,T) - \mathcal{H}(W)}{\mathcal{H}(W)} $$
+Ein relativer Effektivitätsverlust von 0 bedeutet, dass die Zeichen mit ihren entropischen Kosten komprimiert werden, wohingegend bei größeren Werten, diese nicht erreicht werden.
+
+Die Huffmankodierung kommt, in den meisten Situationen, den entropischen Kosten sehr nahe und resultiert daher in Effektivitätsverlusten, die wenige Prozente über dem Optimalfall liegen.
+Jedoch gibt es auch einige Fälle, wo der Huffman Code einen großen relativen Effektivitätsverlust hat, insbesonderen, wenn $w_0$ im Vergleich zur Summe der anderen Zeichen sehr groß wird und $w_0 / m$ nahe an die 1 kommt.
+Zum Beispiel hat die Gewichtmenge $W = \langle 96, 1, 1, 1, 1 \rangle$ eine Entropie von $\mathcal{H}(W) =
+32.2$ Bits , ein zugehöriger optimaler Code $T = \langle 1, 3, 3, 3, 3 \rangle$ mit Kosten $C(W ,T) = 108 $ Bits, und somit einen
+relativen Effektivitätsverlust von $\mathcal{E}(W ,T ) = 235\%$. Ein optimaler Code bedeutet somit nicht unbedingt optimale Komprimierung.
+
+Robert Gallager \cite{1055959} zeigte folgende Beziehung, zwischen einem optimalen Code $T = \langle l_i \rangle $ und der Gewichtsmenge $W = \langle w_i \rangle$ mit der Summe $\sum_{i=0}^{n-1} w_i = m$, mit der sich eine obere Schranke für den relativen Effektivitätsverlust berechnen lässt.
+
+$$ C(W, T) - \mathcal{H}(W) \le \Bigl\lbrace
+    \begin{array}{l}
+          w_0 + 0.086 \cdot m \textrm{, wenn $w_0$ < m/2}\\
+          w_0 \textrm{, wenn $w_0 \ge$ m/2}\\
+    \end{array} $$
+
 \section{Performanzanalyse}
 
 
