@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#define BUF_LENGTH 262144 //65536 // 2^16
+#define BUF_LENGTH 65535 // 2^16
 #define COMPRESSED_TREE_LENGTH 2048 // enough? too much?
 #define HEAP_SIZE 256 // max. size for all extended ASCII characters in heap
 
