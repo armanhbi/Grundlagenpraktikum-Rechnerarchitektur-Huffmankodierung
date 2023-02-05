@@ -23,7 +23,7 @@
 \subsection{Überblick}
 
 Wir befinden uns seit einigen Jahrzehnten in der Big Data Era, wo wir mit einer schnell wachsenden und komplexen Datenmenge konfrontiert werden, sodass herkömmliche Methoden diese nicht oder nur schwer verarbeiten können. Datenkompression spielen daher in der heutigen Zeit eine große Rolle. Viele Computer benutzen ASCII-Kodierung%Link zur ascii tabelle?
- um Zeichen darzustellen. Dabei steht ASCII für American Standard Code for Information Interchange, welches Symbole mit genau acht Bits representiert. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits codiert als Zeichen, die selten vorkommen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
+ um Zeichen darzustellen. Dabei steht ASCII für American Standard Code for Information Interchange \cite{Ascii}, welches Symbole mit genau acht Bits representiert. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits codiert als Zeichen, die selten vorkommen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
 Dies ist das grundlegende Konzept der Huffmankodierung mit dem Ziel einer einfachen und verlustfreien Datenkompression, die von David A. Huffman im Jahr 1952 entwickelt worden ist.
 \subsection{Konzept}
 Dabei wird nach einer Häufigkeitsanalyse der Symbole im Text diese in einem binären Huffmanbaum angeordnet, welche jedem Zeichen ihre entsprechende Bitsequenz zuordnet. Die Besonderheit des Huffmanbaums liegt darin, dass die Symbole nur in dem Blättern des Baumes gespeichert werden, wodurch präfix-freie Sequenzen geschafft werden.
