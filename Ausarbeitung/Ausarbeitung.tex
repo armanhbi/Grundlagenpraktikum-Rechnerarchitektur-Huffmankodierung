@@ -1,6 +1,8 @@
 % Diese Zeile bitte -nicht- aendern.
 \documentclass[course=erap]{aspdoc}
 
+\usepackage{pgfplots}
+\usepackage{tikz}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TODO: Ersetzen Sie in den folgenden Zeilen die entsprechenden -Texte-
 %% mit den richtigen Werten.
@@ -13,41 +15,125 @@
 % Diese Zeile bitte -nicht- aendern.
 \title{Gruppe \theGroup{} -- Abgabe zu Aufgabe \theNumber}
 
+\pgfplotsset{compat=1.18}
 \begin{document}
 \maketitle
 
 \section{Einleitung}
+\subsection{Überblick}
 
-Die von David A. Huffman, im jahr 1952, entwickelte Huffmankodierung dient zur verlustfreien Datenkompression.
-Um Redundanz zu minimieren, werden, nach einer Häufigkeitsanalyse der Symbole, diese in einem Binärbaum angeordnet, sodass der entstehende Binärkode, mit welchem das Symbol im Baum zu erreichen ist, präfixfrei ist.
-Dies bedeutet, dass kein Binärkode Teil eines anderen sein darf und ermöglicht es die Daten ohne Trennzeichen zu speichern. Die Symbole, die häufiger in der Quelldatei auftauchen, befinden sich weiter oben im Baum und brauchen daher auch weniger Bits zum abspeichern. 
-Das Verfahren ist soweit Optimal, da es keinen anderen symbolbasierten Weg gibt, der einen kürzeren Code erzeugen könnte, insofern die Häufigkeiten der Symbole bekannt sind. \cite{4051119}
-Im folgenden gilt es diesen Algorithmus in der Programmiersprache C zu implementieren und ein Rahmenprogramm zu erstellen, welches es ermöglicht Dateien zu komprimieren und zu dekodieren.
+Wir befinden uns seit einigen Jahrzehnten in der Big Data Era, wo wir mit einer schnell wachsenden und komplexen Datenmenge konfrontiert werden, sodass herkömmliche Methoden diese nicht oder nur schwer verarbeiten können. Datenkompression spielen daher in der heutigen Zeit eine große Rolle. Viele Computer benutzen ASCII-Kodierung%Link zur ascii tabelle?
+ um Zeichen darzustellen. Dabei steht ASCII für American Standard Code for Information Interchange, welches Symbole mit genau acht Bits representiert. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits codiert als Zeichen, die selten vorkommen. Dadurch wird der Text zum Schluss platzsparend gespeichert.
+Dies ist das grundlegende Konzept der Huffmankodierung mit dem Ziel einer einfachen und verlustfreien Datenkompression, die von David A. Huffman im Jahr 1952 entwickelt worden ist.
+\subsection{Konzept}
+Dabei wird nach einer Häufigkeitsanalyse der Symbole im Text diese in einem binären Huffmanbaum angeordnet, welche jedem Zeichen ihre entsprechende Bitsequenz zuordnet. Die Besonderheit des Huffmanbaums liegt darin, dass die Symbole nur in dem Blättern des Baumes gespeichert werden, wodurch präfix-freie Sequenzen geschafft werden.
+Dies bedeutet, dass jede Bitfolge einzigartig ist und keine Bitfolge mit dem Anfang einer anderen übereinstimmt. Sobald ein Zeichen zugeordnet worden ist, beginnt direkt die Bitfolge des nächsten Zeichen. Das ermöglicht es, die Daten ohne Trennzeichen zu speichern, sodass Redundanz minimiert wird.
 
-\section{Lösungsansatz}
-
-\subsection{Encode}
-
-Zuerst wird die Häufigkeitsanalyse der Symbole durchgeführt. Dafür wird ein Array mit Pointern auf Nodes für jedes ASCII Zeichen angelegt, welche die Frequenz des Zeichens speichern, sowie das Zeichen für die spätere Verwendung. Das Zählen erfolgt hierbei mit einer Effizienz von $\mathcal{O}(1)$, da der Array-Index dem ASCII-Code entspricht.
-Zusätzlich wird Speicher gespart, indem die Nodes erst erstellt werden sobald das zugehörige ASCII Zeichen das erste mal gelesen wird.
-
-Als Beispiel wird der String $ABRACADABRAB$ komprimiert, welcher die Folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
+Als Beispiel wird der String $ABRAKADABRAB$ komprimiert, welcher die folgenden Häufigkeiten enthält. Nicht vorhandene Zeichen wurden vernachlässigt.
 
 \begin{center}
-    \begin{tabular}{ |c|c|c|c|c| } 
+    \begin{tabular}{ |c|c|c|c|c| }
      \hline
-     A & B & C & D & R \\ 
+     A & B & D & K & R \\
      \hline
-     5 & 3 & 1 & 1 & 2 \\ 
+     5 & 3 & 1 & 1 & 2 \\
      \hline
     \end{tabular}
 \end{center}
 
-Anschließend wird ein Min-Heap erstellt und die erstellten Nodes darin eingefügt. Hier fängt der von Huffman entwickelte Algorithmus an. \cite{10.1145/3342555}
-Solange mehr als ein Node im Min-Heap ist, werden die beiden Nodes mit der geringsten Frequenz aus dem Min-Heap entfernt und an einem neuen Node angehängt (mit einem Null Zeichen), welcher die Summe der beiden Frequenzen als Wert erhält. Dieser wird wieder in den Min-Heap eingefügt.
-Am Ende bleibt nur noch ein Node im Min-Heap übrig, welcher den fertigen Huffman-Baum enthält.
+Daraufhin wird der präfix-freie Huffmanbaum erstellt, welcher jedem Symbol ihre Bitsequenzen zuordnet. Die Zuordnung einer Bitfolge zu einem Symbol erfolgt durch das Traversieren %(?)
+des Baumes von der Wurzel bis zum jeweiligen Zeichen. Muss man dabei ein Knoten nach links beziehungsweise rechts, wird eine 0 beziehungsweise 1 an die kodierte Bitfolge drangehängt.
 
-\subsection{Decode}
+
+% edge from parent node [left, black] {0} machen evtl kreise und evtl anderes beisplie
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+            \node{12} [sibling distance = 2.5cm, level distance = 0.8cm]
+            child {node {A:5} }
+            child {node {7} child {node {B:3}}
+            child {node {4} child {node {R:2}}
+            child {node {2} child {node {K:1}} child {node {D:1}}}}};
+    \end{tikzpicture}
+    \caption{Huffmanbaum}
+    \label{fig:my_label}
+\end{figure}
+
+
+Mit der folgenden Zuweisung der Symbole kann das Beispiel nun dekodiert werden.
+
+\begin{center}
+    \begin{tabular}{c|c}
+        \textbf{Symbol} & \textbf{Bitsequenz} \\
+        \hline
+        A & 0 \\
+        B & 10\\
+        D & 1111\\
+        K & 1110\\
+        R & 110
+    \end{tabular}
+    \label{tab:my_label}
+\end{center}
+\begin{center}
+    ABRAKADABRAB = 0101100111001111010110010
+\end{center}
+
+Ursprunglich hätte das Beispiel mit 12 · 8 = 96 Bits gespeichert werden müssen. Die Huffmankodierung reduziert das Wort auf insgesamt 1+2+3+1+4+1+4+1+2+3+1+2 = 26 Bits. Zusätzlich muss auch der Huffmanbaum abgespeichert werden, dennoch ermöglicht die Huffmankodierung bei vorallem längeren Texten und einem geeigneten, platzsparenden Format zum Speichern des Baums eine gute und einfache Datenkompression, insofern die Häufigkeiten der Symbole bekannt sind. Auf das Format zum Speichern des Baumes wird später genauer eingegangen.\cite{4051119}
+
+Im Folgenden wird eine Implementierung der Huffmankodierung in der Programmiersprache C vorgestellt, welches es ermöglicht, ASCII-Dateien
+zu komprimieren und zu dekodieren. Daraufhin wurde die Korrektheit  %hier oder in Performanzanalyse
+dieser Implementierung anaylsiert. Zuletzt wurde die Performanz auf Kompressionsrate und durch Zeitmessungen untersucht, indem der Algorithmus mit einer nicht optimierten Version und einer Vergleichsimplementierung analysiert wurde.
+
+\section{Lösungsansatz}
+
+Der Lösungsansatz beruht darauf, dass der Benutzer eine Datei mit maximal 65536 Zeichen der erweiterten ASCII-Tabelle angibt, das von einem C Rahmenprogramm eingelesen wird und an das Huffmanprogramm zum Komprimieren gegeben wird. Das Ergebnis wird in einem speziellen Format in die vom Nutzer spezifizierte Ausgabedatei geschrieben. Dieser kann ebenfalls komprimierte Dateien dekodieren, jedoch müssen die Daten hierfür in einem gewissen Format vorliegen, auf das später % wo genau auf schreiben
+genauer eingegangen wird.
+
+\subsection{main.c}
+
+Hier befindet sich das Rahmenprogramm. Die folgenden Argumente können mittels der Funktion getopt() ausgelsesen und die zugehörigen Flags gesetzt werden.
+-V gibt an welche Implementierung verwendet wird, -B ob die Performanz gemessen werden soll und mit einem optionalen Argument wie oft dies geschehen soll.
+-o ist der Name der Ausgabedatei und -d gibt an ob das Programm encodieren oder dekodieren soll. Falls das Argument -h oder invalide Argumente gefunden werden, wird eine Hilfsnachricht ausgedruckt und das Programm mit dem Rückgabewert -1 abgebrochen.
+Zuletzt sollte noch der Name der Eingabedatei, ohne Argument, gefunden werden, wenn diese nicht existiert wird die Hilfe ausgegeben.
+
+Nach den Argumenten wird die Eingabedatei ausgelsesen und in einem String, sowie die Länge des Strings, gespeichert. Nun wird je nach gesetztem -d Flag entweder die encode() oder decode() Funktion, mit dem String und dessen Länge als Parameter, aufgerufen.
+Zum Schluss wird das Ergebnis des Huffman Algorithmus wieder zurück in die Ausgabedatei geschrieben. Wenn irgendwo ein Fehler passiert ist und das Ergebnis nicht existiert, wird die Hilfe ausgegeben.
+
+\subsection{tree.c/heap.c}
+
+Zunächst bestand die Idee darin, den Baum als ein Array zu speichern, um die Zugriffszeiten auf Knoten zu erhöhen. Jedoch wurde klar, dass die Höhe eines Baumes vom Eingabetext und den unterschiedlichen Häufigkeiten der Zeichen stark beeinflusst wird, wodurch die Länge des Array unklar ist. Daher haben wir uns letztendlich für eine doppelt verkettete Liste entschieden. Jeder Knoten wird in einer Struktur zusammengefasst, wobei dieser ein Charakter, den dieser repräsentiert, dessen Häufigkeit und zwei Zeiger auf den linken und rechten Kindknoten speichert. Da die maximale Länge einer Datei 65536 Zeichen beträgt, reicht eine 16 Bit Variabel zum Speichern der Häufigkeit aus.
+
+Es wird ein Min-Heap benutzt, um den Huffmanbaum darzustellen.
+
+
+
+\subsection{huffman.c}
+\subsubsection{encode}
+
+Probleme: evtl entarteter Baum ->nicht schlimm wegen Buffer 65000 rechnung -> max 265 char mal 8 -> 2048 passt schon ungefähr
+
+Zusätzlich muss neben den komprimierten Daten der Baum gespeichert werden, um den Text später dekodieren zu können. Um dennoch von dem Vorteil der Huffmankodierung zu gewinnen, muss ein insbesondere platzsparendes Format genutzt werden. Die Häufigkeit der einzelnen Zeichen ist für das Dekodieren irrelevant und wird daher nicht mitgespeichert.
+Man traversiert den Baum in Pre-Order von der Wurzel. Falls dies ein Blattknoten ist, werden 1-Bit und darauf 8 Bits für das ASCII-Symbol gespeichert, welches das Blatt repräsentiert. Ist es kein Blattknoten, wird ein 0-Bit gespeichert. Daraufhin werden die beiden Kinder-Knoten kodiert, wobei erst das linke und dann das rechte betrachtet wird.
+Für den Baum in Abbildung 1 würde die Folge wie folgt aussehen:
+
+\begin{center}
+    01 01000001(A) 01 01000010(B) 01 01010010(R) 01 01000100(D) 1 01001011(K)
+\end{center}
+
+Beim Ausgabeformat haben wir uns dazu entschieden, den Baum genau so darzustellen, wie er im Speicher mit Bits gespeichert werden wurde. Folglich haben wir auf die Buchstaben und Leerzeichen im Beispiel verzichtet. In der nächsten Zeile steht die kodierte Bitsequenz der Quelldatei. Die Ausgabe ist dadurch nicht das effizienteste Format, dennoch sollte eine gute Mitte zwischen einem menschenlesbaren Format und der Visualisierung der genutzten Bits im Speicher getroffen werden.
+
+\subsubsection{decode}
+
+Das Dekodieren komprimierter Eingaben folgt mit der folgenden Funktion:
+\begin{center}
+    char *huffman\textunderscore decode(size\textunderscore t len, const char data[len])
+\end{center}
+Da das Ergebnis in eine Datei geschrieben wird, wurde der Rückgabeparameter der Funktionssignatur von void auf ein char-Pointer geändert. Nach Allozieren von Speicher mit der Länge von 65536 Bytes wird nach dem Leerzeichen in der zu dekodierenden Eingabe gesucht, welches den Huffmanbaum von den komprimierten Daten trennt. Ist kein Leerzeichen vorhanden oder sind andere Zeichen außer 0 und 1 im Code zu finden, wird eine passende Exception geworfen und NULL zurückgegeben.
+
+Daraufhin wird der Baum rekursive gebildet. Man geht sequenziell durch die Bitsequenz, welche den Baum representiert. Bei einem Null-Bit erstellt man einen NULL-Knoten und ruft rekursive auf seinen linken, dann rechten Kindknoten die Methode auf. Bei einem Eins-Bit erstellt man einen Blattknoten, der das ASCII-Zeichen beinhaltet, die die nächsten 8 Bits der Bitsequenz repräsentieren.
+
+Letztendlich wird die komprimierte Datei dekodiert. Dabei fängt man bei der Wurzel an und geht bei einer 0 beziehungsweise 1 einen Knoten nach links beziehungsweise rechts. Falls es sich um einen Blattknoten handelt, wird das entsprechende Symbol in den Buffer geschrieben und man beginnt wieder an der Wurzel. Zeigt der Zeiger zum Schluss nicht auf die Wurzel des Baums, wird wieder eine Exception ausgegeben.
+Ansonsten werden alle Zeiger gefreet und der Buffer zurückgegeben.
 
 % TODO: Je nach Aufgabenstellung einen der Begriffe wählen
 \section{Korrektheit}
