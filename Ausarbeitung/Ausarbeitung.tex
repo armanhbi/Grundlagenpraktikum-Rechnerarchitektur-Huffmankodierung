@@ -107,7 +107,7 @@ $$ \mathcal{H}(W) = - \sum_{i=0}^{n-1} w_i \cdot log_2 \frac{w_i}{m} $$
 Sie lässt sich aufteilen auf die Summe der Gewichte $m = \sum_{i=0}^{n-1} w_i$ und den entropischen Kosten (in Bits) $-log_2 (w_i/m) = log_2 (m/w_i) $ einer Instanz eines Zeichens, welches mit einer Wahrscheinlichkeit von $(w_i/m)$ auftritt.
 Die Entropie $\mathcal{H}(W)$ gibt die geringste mögliche Länge in Bits an, die der komprimierte Code haben kann, wenn man die Häufigkeitsverteilung mit einbezieht.
 Der \textit{relative Effektivitätsverlust} $\mathcal{E}$ eines zulässigen Codes $T$ und der zugehörigen Gewichte $W$ ist durch folgende Gleichung zu berechnen.
-$$ \mathcal{E}(W, T) = - \frac{C(W,T) - \mathcal{H}(W)}{\mathcal{H}(W)} $$
+$$ \mathcal{E}(W, T) = \frac{C(W,T) - \mathcal{H}(W)}{\mathcal{H}(W)} $$
 Ein relativer Effektivitätsverlust von 0 bedeutet, dass die Zeichen mit ihren entropischen Kosten komprimiert werden, wohingegend bei größeren Werten, diese nicht erreicht werden.
 
 Die Huffmankodierung kommt, in den meisten Situationen, den entropischen Kosten sehr nahe und resultiert daher in Effektivitätsverlusten, die wenige Prozente über dem Optimalfall liegen.
