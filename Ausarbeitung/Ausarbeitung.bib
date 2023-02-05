@@ -19,6 +19,26 @@
   doi={10.1109/JRPROC.1952.273898}
 }
 
+@ARTICLE{6773024,
+  author={Shannon, C. E.},
+  journal={The Bell System Technical Journal}, 
+  title={A mathematical theory of communication}, 
+  year={1948},
+  volume={27},
+  number={3},
+  pages={379-423},
+  doi={10.1002/j.1538-7305.1948.tb01338.x}}
+
+@ARTICLE{1055959,
+  author={Gallager, R.},
+  journal={IEEE Transactions on Information Theory}, 
+  title={Variations on a theme by Huffman}, 
+  year={1978},
+  volume={24},
+  number={6},
+  pages={668-674},
+  doi={10.1109/TIT.1978.1055959}}
+
 @article{10.1145/3342555,
 author = {Moffat, Alistair},
 title = {Huffman Coding},
@@ -38,3 +58,48 @@ articleno = {85},
 numpages = {35},
 keywords = {Huffman code, minimum-redundancy code, data compression}
 }
+
+@misc{HufProof,
+  author = {UC Berkeley},
+  title = {Proof of Optimality of Huffman Coding},
+  howpublished = {\url{https://inst.eecs.berkeley.edu/~cs170/fa20/assets/notes/huffman.pdf}},
+  note = {Accessed: 2023-02-04}
+}
+
+@misc{Ascii,
+  title = {ASCII table , ascii codes : American Standard Code for Information Interchange},
+  howpublished = {\url{https://theasciicode.com.ar/}},
+  note = {Accessed: 2023-02-05}
+}
+
+@misc{1819Vorlesung15a,
+  author = {Anton Wakolbinger},
+  title = {Quellencodieren und Entropie},
+  howpublished = {\url{https://www.math.uni-frankfurt.de/~ismi/wakolbinger/teaching/StofI1819/1819Vorlesung15a.pdf}},
+  note = {Accessed: 2023-02-05}
+}
+
+@inproceedings{Leeuwen1976OnTC,
+  title={On the Construction of Huffman Trees},
+  author={Jan van Leeuwen},
+  booktitle={International Colloquium on Automata, Languages and Programming},
+  year={1976}
+}
+
+@InProceedings{10.1007/3-540-60220-8_79,
+author="Moffat, Alistair
+and Katajainen, Jyrki",
+editor="Akl, Selim G.
+and Dehne, Frank
+and Sack, J{\"o}rg-R{\"u}diger
+and Santoro, Nicola",
+title="In-place calculation of minimum-redundancy codes",
+booktitle="Algorithms and Data Structures",
+year="1995",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="393--402",
+abstract="The optimal prefixfree code problem is to determine, for a given array p=[pi{\textbrokenbar}i∈{\{}1...n{\}}] of n weights, an integer array l= [li{\textbrokenbar}∈{\{}1...n{\}}] of n codeword lengths such that {\$}{\$}{\backslash}sum{\backslash}nolimits{\_}{\{}i = 1{\}}^n {\{}2^{\{} - l{\_}i {\}}  {\backslash}leqslant 1{\}}{\$}{\$}and {\$}{\$}{\backslash}sum{\backslash}nolimits{\_}{\{}i = 1{\}}^n {\{}p{\_}i l{\_}i {\}}{\$}{\$}is minmized. Huffman's famous greedy algorithm solves this problem in O(n log n) time, if p is unsorted; and can be implemented to execute in O(n) time, if the input array p is sorted. Here we consider the space requirements of the greedy method. We show that if p is sorted then it is possible to calculate the array l in-place, with lioverwriting pi, in O(n) time and using O(1) additional space. The new implementation leads directly to an O(n log n)-time and n + O(1) words of extra space implementation for the case when p is not sorted. The proposed method is simple to implement and executes quickly.",
+isbn="978-3-540-44747-4"
+}
+

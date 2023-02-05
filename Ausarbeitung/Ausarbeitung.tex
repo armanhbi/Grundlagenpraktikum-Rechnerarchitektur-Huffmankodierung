@@ -11,6 +11,7 @@
 
 \title{Gruppe \theGroup{} -- Abgabe zu Aufgabe \theNumber}
 
+\pgfplotsset{compat=1.18}
 \begin{document}
 \maketitle
 
@@ -18,11 +19,11 @@
 \subsection{Überblick}
 
 Wir befinden uns seit einigen Jahrzehnten in der Era der Big Data. Schnell wachsenden und komplexen Datenmengen treffen auf herkömmliche Verarbeitungsmethoden, welche diese nicht oder nur schwer verarbeiten können. Daher spielt Datenkompression in der heutigen Zeit eine große Rolle.\\
-Viele Computer benutzen die Extended-ASCII-Kodierung, um Buchstaben digital darzustellen. Dabei steht ASCII für \textit{American Standard Code for Information Interchange}, welches 256 Symbole mit genau acht Bits repräsentieren kann. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits kodieren als Zeichen, die seltener vorkommen. Dadurch wird der Text zum Schluss platzsparender gespeichert.\\
+Viele Computer benutzen die Extended-ASCII-Kodierung, um Buchstaben digital darzustellen. Dabei steht ASCII für \textit{American Standard Code for Information Interchange} \cite{Ascii}, welches 256 Symbole mit genau acht Bits repräsentieren kann. Beachtet man jedoch, dass Symbole in einem Text unterschiedlich oft auftauchen, könnte man Zeichen, die öfters vorkommen, mit weniger Bits kodieren als Zeichen, die seltener vorkommen. Dadurch wird der Text zum Schluss platzsparender gespeichert.\\
 Dies ist das grundlegende Konzept der im Jahr 1952 von \textit{David A. Huffman} entwickelten Huffmankodierung, mit dem Ziel eine einfache und verlustfreie Datenkompression zu ermöglichen.
 \subsection{Konzept}
 Dabei werden die Symbole, verglichen nach relativer Häufigkeit im gegebenen Text, in einem binären Huffmanbaum angeordnet, welcher jedem Zeichen eine entsprechende Bitsequenz zuordnet. Die Besonderheit des Huffmanbaums liegt darin, dass die Symbole nur in dem Blättern des Baumes gespeichert werden, wodurch präfix-freie Sequenzen geschafft werden. Damit wird eine Unverwechselbarkeit garantiert woraus folgt, dass keine Bitfolge mit dem Anfang einer anderen übereinstimmt. Sobald bei der Kodierung ein Zeichen zugeordnet worden ist, beginnt direkt die Bitfolge des nächsten Symbols. Dies ermöglicht es, die Daten ohne Trennzeichen zu speichern, und somit Redundanz zu minimieren.\\
-Im Folgenden wird als Beispiel der String \textit{ANANASSAFT} komprimiert, welcher aus folgender Häufigkeiten hervorgeht. Hierbei wurden nicht vorhandene Zeichen vernachlässigt.\\
+Im Folgenden wird als Beispiel der String \textit{ANANASSAFT} komprimiert, welcher aus folgender Häufigkeiten hervorgeht. Hierbei wurden nicht vorhandene Zeichen vernachlässigt.
 \begin{center}
     \begin{tabular}{ c|c|c|c|c|c }
      \textbf{Zeichen} & A & F & N & S & T \\
@@ -108,7 +109,7 @@ Für den Baum in Abbildung 1 würde die Folge wie folgt aussehen:
     01 01000001(A) 01 01000010(B) 01 01010010(R) 01 01000100(D) 1 01001011(K)
 \end{center}
 Beim Ausgabeformat haben wir uns dazu entschieden, den Baum genau so darzustellen, wie er im Speicher mit Bits gespeichert werden wurde. Folglich haben wir auf die Buchstaben und Leerzeichen im Beispiel verzichtet. Nachdem ein Leerzeichen an die Baum-Bitfolge angehängt wird, folgt dann die kodierte Bitsequenz der Quelldatei. Die Ausgabe ist dadurch nicht das effizienteste Format, dennoch sollte eine gute Mitte zwischen einem menschenlesbaren Format und der Visualisierung der genutzten Bits im Speicher getroffen werden.\\
-Für das eigentliche Kodieren der Eingabe wird mithilfe der Methode tree\textunderscore to\textunderscore dic(Node *root, uint8_t *length_table, uint32_t *lookup_table, uint32_t path, uint8_t length) zunächst der Baum in ein Wörterbuch umgewandelt.
+Für das eigentliche Kodieren der Eingabe wird mithilfe der Methode tree\textunderscore to\textunderscore dic(Node *root, uint8\textunderscore t *length\textunderscore table, uint32\textunderscore t *lookup\textunderscore table, uint32\textunderscore t path, uint8\textunderscore t length) zunächst der Baum in ein Wörterbuch umgewandelt.
 
 
 
@@ -224,8 +225,8 @@ Die folgende Grafik zeigt die Eingabelänge in Relation zur Kompressionsrate bei
     \end{tikzpicture}
 \end{center}
 Die Tests spiegeln deutlich wieder, dass das Shannon-Fano Verfahrung für Eingaben bis zu einer Länge von 100 Zeichen im Allgemeinen eine bessere Kompressionsrate erbringt als die Huffman Kodierung. Jedoch ändert sich dies drastisch bei größeren Zeichenketten.\\
-Erklärt werden kann dies durch die rekursive Verteilung der Codes. Wenn die Eingabehäufigkeit aller Buchstaben relativ gleichverteilt ist, wird bei Shannon-Fano öfters und gleichmäßiger rekursiv aufgeteilt was für jeden Code im Worst-Case $\log2(n)$ bedeutet. Anstatt sich die Häufigkeit zu Nutzen zu machen, wie es bei Huffman der Fall ist, wird (bei perfekter Aufteilung) ab einer Eingabe von 256 Zeichen die Kompressionsrate höher als eine direkte Abbildung der Zeichen auf Bitrepräsentation ($\log2(256)=8$).
-%Quellencodierungssatz kommt stark: https://www.math.uni-frankfurt.de/~ismi/wakolbinger/teaching/StofI1819/1819Vorlesung15a.pdf%
+Erklärt werden kann dies durch die rekursive Verteilung der Codes. Wenn die Eingabehäufigkeit aller Buchstaben relativ gleichverteilt ist, wird bei Shannon-Fano öfters und gleichmäßiger rekursiv aufgeteilt was für jeden Code im Worst-Case $\log2(n)$ bedeutet. Anstatt sich die Häufigkeit zu Nutzen zu machen, wie es bei Huffman der Fall ist, wird (bei perfekter Aufteilung) ab einer Eingabe von 256 Zeichen die Kompressionsrate höher als eine direkte Abbildung der Zeichen auf Bitrepräsentation ($\log2(256)=8$). \cite{1819Vorlesung15a}
+
 \subsection{Optimierung}
 Die Korrektheit des Huffman Codes war von Anfang an gegeben, jedoch haben wir durch einige Optimierungen die Zeit die unser Programm verbraucht hat reduzieren können. Die benutzten Optimierungen werden im Folgenden untersucht.\\\\
 Gemessen wurde die Hauptimplementierung ohne jegliche Ein-/Ausgabe auf 10000 Durchläufen. Der "print dash" wurde nicht gesetzt was alle Konsolenausgaben ausgeschaltet. Es wurden 20 unterschiedliche \textit{Lorem ipsum} Teile %hier quelle rein
